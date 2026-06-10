@@ -1,0 +1,87 @@
+/* ══════════════════════════════════════════
+   GAMEDEV TRANSITION (SLIDING PANELS + BARS)
+   ══════════════════════════════════════════ */
+.gd-transition-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.gd-panel {
+  position: absolute;
+  left: 0; width: 100%;
+  height: 50vh;
+  background: #1c2020;
+  transition: transform 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+  will-change: transform;
+}
+
+.gd-panel-top {
+  top: 0;
+  transform: translateY(-100%);
+}
+
+.gd-panel-bottom {
+  bottom: 0;
+  transform: translateY(100%);
+}
+
+.gd-loader {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px; height: 50px;
+  display: flex;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: 100001;
+  pointer-events: none;
+}
+
+.gd-loader div {
+  height: 100%;
+  width: 8px;
+  animation: gd-bar-delay 0.8s infinite ease-in-out;
+}
+
+.gd-loader .bar1 { background-color: #754fa0; }
+.gd-loader .bar2 { background-color: #09b7bf; animation-delay: -0.7s; }
+.gd-loader .bar3 { background-color: #90d36b; animation-delay: -0.6s; }
+.gd-loader .bar4 { background-color: #f2d40d; animation-delay: -0.5s; }
+.gd-loader .bar5 { background-color: #fcb12b; animation-delay: -0.4s; }
+.gd-loader .bar6 { background-color: #ed1b72; animation-delay: -0.3s; }
+
+@keyframes gd-bar-delay {
+  0%, 40%, 100% { transform: scaleY(0.05); }
+  20% { transform: scaleY(1.0); }
+}
+
+/* Classes d'activation */
+.gd-transition-active {
+  visibility: visible;
+  pointer-events: all;
+}
+
+/* État fermé (Fermeture) */
+.gd-transition-active .gd-panel {
+  transform: translateY(0);
+}
+
+/* État ouverture (Révélation) */
+.gd-transition-opening .gd-panel-top {
+  transform: translateY(-100%);
+  transition: transform 0.65s cubic-bezier(0.85, 0, 0.15, 1);
+}
+
+.gd-transition-opening .gd-panel-bottom {
+  transform: translateY(100%);
+  transition: transform 0.65s cubic-bezier(0.85, 0, 0.15, 1);
+}
+
+.gd-transition-active .gd-loader {
+  opacity: 1;
+  transition-delay: 0.2s;
+}

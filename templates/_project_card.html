@@ -1,0 +1,24 @@
+<div class="project-card">
+  {% if p.image_url %}
+    <img class="card-img" src="{{ url_for('static', filename='uploads/' + p.image_url) }}" alt="{{ p.title }}" onerror="this.style.display='none'" />
+  {% else %}
+    <div class="card-img-placeholder">🚀</div>
+  {% endif %}
+  <div class="card-body">
+    {% if p.category %}<div class="card-cat">{{ p.category }}</div>{% endif %}
+    <div class="card-title">
+      {% if p.featured %}<span class="featured-star">⭐</span>{% endif %}
+      {{ p.title }}
+    </div>
+    <p class="card-desc">{{ p.description[:140] }}{% if p.description|length > 140 %}…{% endif %}</p>
+  </div>
+  <div class="card-footer">
+    {% for tech in p.tech_list()[:4] %}
+      <span class="badge">{{ tech }}</span>
+    {% endfor %}
+    <div class="link-btn">
+      {% if p.github_url %}<a href="{{ p.github_url }}" target="_blank">GitHub</a>{% endif %}
+      {% if p.live_url %}<a href="{{ p.live_url }}" target="_blank">Live →</a>{% endif %}
+    </div>
+  </div>
+</div>

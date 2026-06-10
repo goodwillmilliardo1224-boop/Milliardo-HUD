@@ -1,0 +1,28 @@
+# Environments & Secrets
+.env
+*.pem
+*.key
+.vercel/
+.agents/
+skills-lock.json
+
+# Databases
+*.db
+*.sqlite3
+base de donné/
+
+# Backups & Temporary files
+*.backup
+*~
+__pycache__/
+*.py[cod]
+
+# Uploads (Images de projets - à stocker sur Supabase Storage)
+static/uploads/*
+!static/uploads/.gitkeep
+
+# OS junk
+Thumbs.db
+Desktop.ini
+.DS_Store
+

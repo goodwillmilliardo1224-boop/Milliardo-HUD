@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}m!ll!@rd0 — Portfolio{% endblock %}
+
+{% block favicon %}
+<link rel="icon" type="image/png" href="{{ url_for('static', filename='img/accueilicon.png') }}">
+{% endblock %}
+
+{% block content %}
+<main>
+
+  <!-- 1. HERO / IDENTITY -->
+  <div class="profile-wrapper">
+    <!-- Colonne Gauche : Photo + Social -->
+    <div class="profile-left">
+      <div class="container-3d">
+        <div class="profile-container cadre-3d">
+          <img src="{{ url_for('static', filename='img/croix.jpg') }}" alt="croix" class="profile-img"/>
+        </div>
+      </div>
+
+      <div class="social-section">
+        <div class="social-label">// connect</div>
+        <div class="social-dock">
+          <a href="mailto:goodwillmilliardo1224@gmail.com" class="ic ic-gm"><div class="ic-inner"><i class="fas fa-envelope"></i></div><span class="ic-name">Gmail</span></a>
+          <a href="https://wa.me/2290153272843" class="ic ic-wa"><div class="ic-inner"><i class="fab fa-whatsapp"></i></div><span class="ic-name">WhatsApp</span></a>
+          <a href="https://discord.com/users/milliardo1224" class="ic ic-dc"><div class="ic-inner"><i class="fab fa-discord"></i></div><span class="ic-name">Discord</span></a>
+          <a href="https://github.com/goodwillmilliardo1224-boop" class="ic ic-gh"><div class="ic-inner"><i class="fab fa-github"></i></div><span class="ic-name">GitHub</span></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Colonne Droite : Nom + Bio -->
+    <div class="profile-info">
+      <div class="profile-name pro-glitch" data-text="GOOD WILL">GOOD WILL</div>
+      <div class="profile-bio" id="bio">
+        <span class="bio-cursor"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. DOMAINS / PROJECTS -->
+  <section class="orb-section">
+    <div class="orb-intro">
+      <h2 class="intro-title" data-text="PORTAIL VERS DE NOUVEAUX MONDES">PORTAIL VERS DE NOUVEAUX MONDES</h2>
+      <p class="intro-text">
+        Je m'investis dans plusieurs domaines qui me passionnent tous les uns que les autres 
+        et dans lesquels j'excelle bien.Ici c'est le portail qui lie les differente version de moi.
+        Découvrez les mondes dans lesquels je passe mon quotidien...
+      </p>
+    </div>
+
+    <div class="ring">
+      <i></i><i></i><i></i>
+
+      <div class="orb-wrap" id="orb-wrap">
+        <div class="orb-pulse"></div>
+        <div class="orb-pulse"></div>
+
+        <div class="kinetic-orb-container">
+          <div class="orb-inner">
+            {% for projet in projets %}
+            {% set domaine = projet.domaine if projet.domaine else projet.category %}
+            {# Mapping pour le CSS (cybersec -> cyber, gamedev -> games) #}
+            {% set css_map = {'cybersec': 'cyber', 'gamedev': 'games'} %}
+            {% set css_class = css_map.get(domaine, domaine) %}
+            
+            <a href="{{ url_for('detail_projet', domaine=domaine) }}" class="seg seg-{{ css_class }}" id="seg-{{ css_class }}" data-target="ann-{{ css_class }}">
+              {% if projet.image %}
+                {# Ancien système JSON #}
+                <img src="{{ url_for('static', filename=projet.image) }}" alt="{{ projet.titre }}"/>
+              {% elif projet.image_url %}
+                {# Nouveau système DB avec upload #}
+                <img src="{{ url_for('static', filename='uploads/' + projet.image_url) }}" alt="{{ projet.title }}"/>
+              {% else %}
+                <img src="{{ url_for('static', filename='img/cyber.jpg') }}" alt="Default"/>
+              {% endif %}
+              <div class="seg-col"></div>
+              <div class="seg-ov"></div>
+              <div class="seg-icon"><span class="material-symbols-outlined">{{ projet.icon if projet.icon else 'star' }}</span></div>
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+
+        {% for projet in projets %}
+        {% set domaine = projet.domaine if projet.domaine else projet.category %}
+        {% set css_map = {'cybersec': 'cyber', 'gamedev': 'games'} %}
+        {% set css_class = css_map.get(domaine, domaine) %}
+        <div class="ann ann-{{ css_class }}" id="ann-{{ css_class }}">
+          <div class="hud-titre">{{ projet.title if projet.title else projet.titre }}</div>
+          <svg class="hud-svg" xmlns="http://www.w3.org/2000/svg" overflow="visible">
+            <polyline class="hud-line" points="0,25 240,25 240,35 320,180"/>
+          </svg>
+          <div class="hud-desc">{{ projet.description }}</div>
+        </div>
+        {% endfor %}
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. ENDING / FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-line"></div>
+    <div class="footer-content">
+      <div class="footer-left">
+        <span class="status-dot"></span> SYSTEM ONLINE — V2.0
+      </div>
+      <div class="footer-right">
+        © 2026 DJOGBENOU Serflorel Goodwill — TOUS DROITS RÉSERVÉS
+      </div>
+    </div>
+  </footer>
+
+</main>
+{% endblock %}

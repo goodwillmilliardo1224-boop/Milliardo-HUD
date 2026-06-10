@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block title %}Art — m!ll!@rd0{% endblock %}
+
+{% block body_class %}universe-art{% endblock %}
+
+{% block favicon %}
+<link rel="icon" type="image/png" href="{{ url_for('static', filename='img/articon.png') }}">
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/art/style.css') }}"/>
+<style>
+  .btn-pinceau-home {
+    filter: url(#pinceau-filter);
+    transition: all 0.18s ease;
+  }
+
+  .btn-pinceau-home:hover {
+    filter: url(#pinceau-hover-filter);
+  }
+
+  .btn-social-pinceau::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 2.5px solid #111111;
+    border-radius: 3px 14px 5px 18px / 18px 5px 14px 3px;
+    box-shadow: 2px 2px 0px rgba(17,17,17,0.22);
+    filter: url(#pinceau-filter);  /* ✅ fonctionne car SVG est dans le même document */
+    background: transparent;
+    transition:
+      border-radius 0.25s ease,
+      background   0.18s ease,
+      box-shadow   0.18s ease;
+  }
+
+  .btn-social-pinceau:hover::before {
+    background: #111111;
+    border-radius: 14px 3px 18px 5px / 5px 18px 3px 14px;
+    box-shadow:
+      5px 5px 0px #111111,
+      9px 9px 0px rgba(17,17,17,0.12);
+    filter: url(#pinceau-hover-filter);
+  }
+
+  .btn-social-pinceau:active::before {
+    box-shadow: 1px 1px 0px #111111;
+  }
+</style>
+{% endblock %}
+
+{% block header %}
+<header id="navbar">
+    <div class="nav-logo nav-glitch" data-text="MIllI@rd0.">
+        <span class="rr-letter">MIllI</span><span class="arobase">@</span><span class="rr-letter">rd0.</span>
+    </div>
+    <a href="/" class="btn-pinceau-home">home</a>
+</header>
+{% endblock %}
+
+{% block content %}
+<!-- SVG FILTERS FOR ART EFFECT -->
+<svg style="visibility: hidden; position: absolute;" width="0" height="0" xmlns="http://www.w3.org/2000/svg" version="1.1">
+    <defs>
+        <filter id="pinceau-filter">
+            <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="5" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="2" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+        <filter id="pinceau-hover-filter">
+            <feTurbulence type="fractalNoise" baseFrequency="0.1" numOctaves="3" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+    </defs>
+</svg>
+
+<!-- Curseur personnalisé (Art Page Only) -->
+<div id="pinceau">
+    <img id="img-pinceau" src="{{ url_for('static', filename='img/pin.png') }}" alt="" draggable="false" role="presentation">
+</div>
+
+<main class="ar-universe">
+    <div class="ar-title-container">
+        <div class="art-wrapper">
+            <img class="bleu" src="{{ url_for('static', filename='img/bleu.jpg') }}" alt="bleu">
+            <img class="art"  src="{{ url_for('static', filename='img/titre.png') }}" alt="ART">
+        </div>
+    </div>
+
+    <div class="box-texte">
+        <h1 class="phrase-pinceau" id="typewriter"></h1>
+    </div>
+
+    <!-- Dock Social (Bas Gauche) -->
+    <div class="social-container">
+        <a href="mailto:goodwillmilliardo1224@gmail.com" class="btn-social-pinceau" title="Gmail">
+            <i class="fas fa-envelope"></i>
+        </a>
+        <a href="https://wa.me/2290153272843" class="btn-social-pinceau" title="WhatsApp">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+        <a href="https://discord.com/users/milliardo1224" class="btn-social-pinceau" title="Discord">
+            <i class="fab fa-discord"></i>
+        </a>
+        <a href="https://github.com/goodwillmilliardo1224-boop" class="btn-social-pinceau" title="GitHub">
+            <i class="fab fa-github"></i>
+        </a>
+    </div>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/art/cursor.js') }}"></script>
+<script>
+    // Injection du texte dynamique du projet
+    {% if projet and projet.description %}
+    const dynamicArtText = {{ projet.description | tojson }};
+    {% endif %}
+
+    document.addEventListener('DOMContentLoaded', () => {
+        if (typeof BrushCursor !== 'undefined') {
+            BrushCursor.init();
+        }
+    });
+</script>
+<script src="{{ url_for('static', filename='js/art/main.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Admin — Connexion{% endblock %}
+
+{% block extra_style %}
+<style>
+  .login-wrap {
+    min-height: 100vh; display: grid; place-items: center;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, #1a1040 0%, var(--bg) 70%);
+  }
+  .login-card {
+    width: 100%; max-width: 400px; padding: 2.5rem;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: 0 0 60px rgba(124,106,247,.08);
+    text-align: center; /* Centre le texte et les éléments internes */
+  }
+  .login-logo {
+    font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800;
+    color: var(--accent); letter-spacing: -1px; margin-bottom: .3rem;
+  }
+  .login-sub { color: var(--muted); font-size: .9rem; margin-bottom: 3.5rem; } /* Plus d'espace pour descendre le champ */
+  .field { margin-bottom: 1.2rem; }
+  .field label { display: block; font-size: .8rem; font-weight: 600; color: var(--muted); margin-bottom: .4rem; letter-spacing: .05em; text-transform: uppercase; text-align: center; }
+  .field input {
+    width: 100%; padding: 1.1rem 1.2rem; /* Plus haut et large pour le confort */
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: var(--radius); color: var(--text);
+    font-family: 'Epilogue', sans-serif; font-size: 1rem;
+    transition: border-color .2s;
+    text-align: center; /* Centre le curseur et le mot de passe */
+  }
+  .field input:focus { outline: none; border-color: var(--accent); }
+  .login-btn { width: 100%; padding: .85rem; font-size: 1rem; justify-content: center; margin-top: .5rem; }
+  .lock-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="login-wrap">
+  <div class="login-card">
+    <div class="lock-icon">🔐</div>
+    <div class="login-logo">Admin</div>
+    <p class="login-sub">Espace de gestion du portfolio</p>
+
+    <form method="POST">
+      <div class="field">
+        <label>Mot de passe</label>
+        <input type="password" name="password" placeholder="••••••••" autofocus required />
+      </div>
+      <button type="submit" class="btn btn-primary login-btn">Se connecter</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

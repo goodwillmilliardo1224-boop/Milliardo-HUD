@@ -1,0 +1,754 @@
+/* CYBER TERMINAL STYLES 
+   Inspiré par terminal.md
+*/
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  overflow: hidden !important;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* 1. ÉCRAN D'ACCUEIL (PRESS ANY KEY) */
+#intro-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  background-color: #000000;
+  user-select: none;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+  cursor: none !important;
+}
+
+#intro-screen.fade-out {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.mini-square-blink {
+  width: 6px;
+  height: 6px;
+  background-color: #ffffff;
+  animation: fast-blink 0.8s step-end infinite;
+}
+
+.press-text {
+  color: #ffffff;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+  opacity: 0.7;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+@keyframes fast-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* 2. LE CANVAS DE LOGS DOUBLE COLONNE */
+#bg-logs-canvas {
+  position: fixed;
+  top: 45px;
+  left: 0;
+  width: 100%;
+  height: calc(100% - 45px);
+  z-index: 1;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1.5s ease;
+}
+
+#bg-logs-canvas.show {
+  opacity: 0.45; /* Plus visible */
+}
+
+/* 3. STRUCTURE DU BIOS POST */
+#cyber-page-body {
+  position: fixed; 
+  top: 45px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  box-sizing: border-box;
+  padding: 10px 40px; 
+  color: #ffffff; 
+  cursor: none !important;
+  display: flex;
+  align-items: flex-start; 
+  justify-content: center;
+  overflow: hidden; 
+}
+
+#terminal-content {
+  position: absolute;
+  top: 10px; 
+  left: 40px;
+  width: calc(100% - 80px);
+  max-width: none; 
+  font-size: 1rem; /* Augmenté */
+  font-weight: 500; /* Plus gras */
+  line-height: 1.5;
+  transition: opacity 0.5s ease;
+  font-family: 'Courier New', Courier, monospace;
+  z-index: 10;
+}
+
+#terminal-content.clear-logs {
+  opacity: 0;
+}
+
+.bios-line {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  width: 100%;
+  margin: 0 0 2px 0; 
+}
+
+.bios-line.spacing {
+  margin-bottom: 18px; 
+}
+
+.spec-label {
+  display: inline-block;
+  width: 50px; 
+}
+
+.status-ok { color: #28c840; }
+
+/* 4. ZONE CENTRALE HERO */
+#hero-title-container {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  text-align: center;
+  opacity: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; 
+  overflow: hidden;
+  transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+  padding: 0 20px;
+}
+
+#hero-title-container.show {
+  opacity: 1;
+}
+
+#titles-wrapper {
+  transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+  width: 90%;
+  max-width: 600px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto; /* Centrage horizontal parfait */
+  transform: scale(1.1) translateY(-30px);
+}
+
+/* État "reculé" après apparition */
+#titles-wrapper.ready {
+  transform: scale(0.95) translateY(-30px);
+  opacity: 0.8;
+}
+
+#titles-wrapper.shifted {
+  transform: translateY(-15px);
+  flex-direction: row; 
+  justify-content: center;
+  align-items: center;
+  gap: 1px;
+}
+
+#titles-wrapper.shifted .main-hero-title {
+  transform: none; 
+  font-size: 1.4rem;
+  opacity: 1; 
+  margin: 0;
+  letter-spacing:1px;
+}
+
+#titles-wrapper.shifted .sub-hero-title {
+  transform: translateY(2px);
+  opacity: 0.8;
+  color: #ffffff; 
+  font-weight: 500;
+  margin: 0;
+  white-space: nowrap;
+}
+
+/* Onglets et Input */
+.cmd-input-container {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+  pointer-events: none;
+}
+
+.cmd-input-container.reveal {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.main-hero-title {
+  font-size: clamp(2rem, 12vw, 5.5rem); 
+  font-weight: 900;  
+  color: #ffffff; 
+  letter-spacing: -1px; 
+  margin: 0 auto;
+  font-family: Arial, Helvetica, sans-serif;
+  text-transform: lowercase;
+  user-select: none;
+  transition: all 0.6s ease;
+  max-width: 100%;
+  overflow-wrap: break-word;
+  text-align: center;
+}
+
+.main-hero-title span {
+  font-family: 'Courier New', Courier, monospace;
+  animation: fast-blink 0.8s step-end infinite;
+}
+
+.sub-hero-title {
+  font-size: 1rem;
+  color: #ffffff; 
+  opacity: 0.6;
+  margin-top: 2px;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+  user-select: none;
+  font-family: 'Courier New', Courier, monospace;
+  transition: all 0.6s ease;
+  text-align: center;
+}
+
+/* 6. FOOTER */
+#cyber-footer {
+  position: absolute;
+  bottom: 20px;
+  left: 40px;
+  right: 40px;
+  display: flex;
+  justify-content: space-between;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.3);
+  letter-spacing: 1px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 15px;
+  user-select: none;
+}
+
+.status-indicator {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background-color: #28c840;
+  border-radius: 50%;
+  margin-right: 8px;
+  box-shadow: 0 0 8px #28c840;
+  animation: fast-blink 1s step-end infinite;
+}
+
+/* Onglets de navigation — flèches + scroll */
+.tabs-wrapper {
+  width: 90%;
+  max-width: 600px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin: 15px auto 0 auto;
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+  pointer-events: none;
+}
+
+.tabs-wrapper.reveal {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.tabs-arrow {
+  background: transparent;
+  border: 1px solid #333;
+  color: #fff;
+  font-size: 18px;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  cursor: none !important;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  z-index: 10;
+}
+
+.tabs-arrow:hover {
+  border-color: #fff;
+  background: rgba(255,255,255,0.05);
+}
+
+.hud-navigation-tabs {
+  flex: 0 1 auto;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap; 
+  overflow-x: auto; 
+  gap: 8px;
+  padding: 10px 0;
+  scrollbar-width: none; 
+  -ms-overflow-style: none;
+}
+
+.hud-navigation-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.nav-tab {
+  display: inline-block !important;
+  flex-shrink: 0; 
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid #222222; 
+  color: #ffffff;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 8px 18px;
+  border-radius: 6px;
+  cursor: none !important;
+  outline: none;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+  white-space: nowrap;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.nav-tab:hover {
+  border-color: #1a74b1;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.nav-tab.special {
+  border-color: #333333;
+}
+
+/* Boîtier input de recherche */
+.cmd-input-container {
+  width: 90%;
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid #333333; 
+  border-radius: 8px;
+  padding: 12px 16px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: border-color 0.2s ease;
+}
+
+.cmd-input-container:focus-within {
+  border-color: #ffffff;
+}
+
+.cmd-left-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.cmd-user-prefix {
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: bold;
+  white-space: nowrap;
+  user-select: none;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.cmd-real-input {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.9rem;
+  flex: 1;
+  outline: none;
+  padding: 0;
+  margin: 0;
+  cursor: none !important;
+}
+
+.cmd-real-input::placeholder {
+  color: #444444;
+  opacity: 1;
+}
+
+.cmd-right-controls {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  user-select: none;
+}
+
+.cmd-btn-box, .cmd-btn-arrow {
+  background: transparent;
+  border: 1px solid #222222;
+  border-radius: 4px;
+  padding: 2px 6px;
+  color: #ffffff;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.75rem;
+  cursor: none !important;
+  outline: none;
+}
+
+/* 5. ZONE DE CONVERSATION NETTE — espace réservé */
+#chat-display-area {
+  width: 90%;
+  max-width: 600px;
+  margin: 0 auto 10px auto;
+  max-height: min(420px, 50vh);
+  overflow: hidden;
+  opacity: 0;
+  box-sizing: border-box;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  font-family: 'Courier New', Courier, monospace;
+  transition: opacity 0.5s ease, max-height 0.4s cubic-bezier(.23,1,.32,1);
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  text-align: left;
+  flex-shrink: 0;
+}
+
+#chat-display-area:not(.hidden) {
+  opacity: 1;
+  padding: 12px 14px;
+  border-color: rgba(255, 255, 255, 0.15);
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+#chat-display-area::-webkit-scrollbar {
+  width: 4px;
+}
+
+#chat-display-area::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.01);
+}
+
+#chat-display-area::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+}
+
+.chat-log-line {
+  font-size: 1.1rem; /* Augmenté pour lisibilité sans effort */
+  font-weight: 500; /* Plus de gras */
+  line-height: 1.6;
+  white-space: pre-wrap;
+  animation: fadeUpIn 0.3s ease forwards;
+}
+
+@keyframes fadeUpIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.chat-user-query {
+  color: #ffffff;
+  font-weight: bold;
+  text-align: right;
+  align-self: flex-end; /* Pousse à droite */
+  width: 100%;
+}
+
+.chat-ai-response {
+  color: #ffffff;
+  opacity: 0.9;
+  text-align: left;
+  align-self: flex-start; /* Reste à gauche */
+  width: 100%;
+  white-space: pre-wrap; /* Respecte les sauts de ligne */
+  line-height: 1.7; /* Aéré */
+}
+
+.chat-ai-response b {
+  font-weight: 900;
+  color: #00f5ff;
+  text-shadow: 0 0 5px rgba(0, 245, 255, 0.2);
+}
+
+/* Contact HUD: affichage dans le bloc parent du chat */
+.chat-ai-response .contact-box {
+  width: min(315px, 100%) !important;
+  max-width: 100% !important;
+  flex: 0 0 auto !important;
+  align-self: flex-start !important;
+  display: block !important;
+  box-sizing: border-box !important;
+  white-space: normal !important;
+  line-height: normal !important;
+  font-size: 10px !important;
+}
+
+/* Contact HUD: bloc compact */
+.chat-ai-response .contact-box > div {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  gap: 7px !important;
+}
+
+.chat-ai-response .contact-box input,
+.chat-ai-response .contact-box textarea,
+.chat-ai-response .contact-box button {
+  box-sizing: border-box !important;
+  max-width: 100% !important;
+  line-height: 1.2 !important;
+}
+
+.chat-ai-response .contact-box textarea {
+  height: 74px !important;
+  min-height: 74px !important;
+  flex: 0 0 auto !important;
+  display: block !important;
+}
+
+.chat-ai-response .contact-box button {
+  display: block !important;
+  width: 100% !important;
+  margin: 0 !important;
+  flex: 0 0 auto !important;
+  text-align: center !important;
+}
+
+.chat-ai-response .contact-box > div > div[style*="display:flex;gap:8px"] {
+  gap: 10px !important;
+}
+
+@media (max-width: 480px) {
+  .chat-ai-response .contact-box {
+    width: 100% !important;
+  }
+
+  .chat-ai-response .contact-box > div > div[style*="display:flex;gap:8px"] {
+    flex-direction: column !important;
+  }
+}
+
+.stream-cursor {
+  display: inline-block;
+  width: 8px;
+  height: 14px;
+  background-color: #ffffff;
+  vertical-align: middle;
+  margin-left: 4px;
+  animation: fast-blink 0.8s step-end infinite;
+}
+
+.typing-dots span {
+  animation: messenger-blink 1.4s infinite both;
+  display: inline-block;
+}
+.typing-dots span:nth-child(2) { animation-delay: .2s; }
+.typing-dots span:nth-child(3) { animation-delay: .4s; }
+
+@keyframes messenger-blink {
+  0%   { opacity: .2; transform: translateY(0); }
+  20%  { opacity: 1;  transform: translateY(-3px); }
+  100% { opacity: .2; transform: translateY(0); }
+}
+
+.hidden { display: none !important; }
+
+/* 6. HEADER DE LA BARRE DE TITRE (OS) */
+#cyber-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 105px; /* Augmenté de 20px par rapport à l'original (85px -> 105px) */
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  box-sizing: border-box;
+  z-index: 9999;
+  user-select: none;
+}
+
+.cyber-header-home {
+  margin-left: auto;
+  color: #ffffff;
+  text-decoration: none;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  padding: 6px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.cyber-header-home:hover {
+  background: rgba(0, 245, 255, 0.15);
+  border-color: #00f5ff;
+  color: #00f5ff;
+  box-shadow: 0 0 10px rgba(0, 245, 255, 0.3);
+}
+
+.header-controls {
+  display: flex;
+  gap: 8px;
+  margin-right: 20px;
+}
+
+.header-controls .dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #ffffff; /* Tous les points en blanc */
+  opacity: 0.5;
+}
+.dot-close, .dot-min, .dot-max { background-color: #ffffff !important; }
+
+.header-brand {
+  font-weight: bold;
+  font-size: 1.1rem;
+  letter-spacing: 3px;
+  color: #ffffff;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.header-sub-brand {
+  font-size: 0.85rem;
+  color: #00f5ff;
+  margin-left: 10px;
+  opacity: 0.8;
+  letter-spacing: 2px;
+}
+
+/* 7. DOCK SOCIAL */
+#social-dock {
+  position: fixed;
+  bottom: 40px; /* Aligné sur Art */
+  left: 70px;   /* Aligné sur Art */
+  display: flex;
+  gap: 12px;
+  z-index: 5;   
+  pointer-events: auto;
+}
+
+@media screen and (max-width: 768px) {
+  #social-dock {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    /* Ignore le resize du clavier */
+    will-change: unset;
+  }
+}
+
+.social-item {
+  width: 48px; /* Aligné sur la dimension Art */
+  height: 48px; /* Aligné sur la dimension Art */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent; /* Totalement transparent */
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 1.1rem; /* Adapté à la nouvelle taille */
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  backdrop-filter: blur(2px);
+}
+
+.social-item:hover {
+  background: rgba(255, 255, 255, 0.05); /* Très léger voile au survol */
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 10px rgba(255, 255, 255, 0.05);
+}
+
+/* 8. CURSEUR PERSO */
+#cur {
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid #ffffff;
+  pointer-events: none;
+  z-index: 100001;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cur-dot {
+  width: 4px;
+  height: 4px;
+  background: #ffffff;
+  transition: width 0.3s ease, height 0.3s ease;
+  animation: cur-blink .7s step-end infinite;
+}
+
+#cur.clicked .cur-dot {
+  width: 14px;
+  height: 14px;
+  transition: width 0.1s ease, height 0.1s ease;
+}
+
+@keyframes cur-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}

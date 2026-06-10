@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}Portfolio{% endblock %}</title>
+  {% block favicon %}{% endblock %}
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700;800&family=Bebas+Neue&family=Syne+Mono&family=Oxanium:wght@200;300;400;600;700;800&family=Saira:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <!-- Cinzel Decorative -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Finlandica:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+
+  <!-- CSS global -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/gd_transition.css') }}"/>
+
+  <!-- CSS spécifique à la page (optionnel) -->
+  {% block extra_css %}{% endblock %}
+
+  <style>
+    :root {
+      --admin-bg:       #0a0a0f;
+      --admin-surface:  #13131a;
+      --admin-border:   #1e1e2e;
+      --admin-accent:   #7c6af7;
+      --admin-accent2:  #f97316;
+      --admin-text:     #e8e6f0;
+      --admin-muted:    #6b6880;
+      --success:        #22c55e;
+      --error:          #ef4444;
+      --info:           #3b82f6;
+      --radius:         10px;
+    }
+
+    /* Styles Admin / Flash */
+    .btn {
+      display: inline-flex; align-items: center; gap: .4rem;
+      padding: .5rem 1.1rem; border-radius: var(--radius);
+      font-family: 'Syne', sans-serif; font-size: .85rem; font-weight: 600;
+      cursor: pointer; border: none; transition: all .2s;
+    }
+    .btn-primary  { background: var(--admin-accent);  color: #fff; }
+    .btn-danger   { background: #2a1212; color: var(--error); border: 1px solid #3a1818; }
+    .btn-ghost    { background: transparent; color: var(--admin-muted); border: 1px solid var(--admin-border); }
+    .btn-warning  { background: #2a2010; color: var(--admin-accent2); border: 1px solid #3a2e18; }
+
+    .flash-wrap { position: fixed; top: 1.2rem; right: 1.2rem; z-index: 999999; display: flex; flex-direction: column; gap: .5rem; }
+    .flash {
+      padding: .75rem 1.2rem; border-radius: var(--radius);
+      font-size: .9rem; font-weight: 500; min-width: 260px;
+      animation: slideIn .3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    }
+    .flash.success { background: #0d2618; border: 1px solid #16532d; color: var(--success); }
+    .flash.error   { background: #2a0d0d; border: 1px solid #5a1a1a; color: var(--error); }
+    .flash.info    { background: #0d1a2a; border: 1px solid #1a3a5a; color: var(--info); }
+    @keyframes slideIn { from { transform: translateX(110%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+    /* ══ PAGE TRANSITION OVERLAY ══ */
+    #page-veil {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .veil-panel {
+      flex: 1;
+      background: #000;
+      transform: scaleY(0);
+      transform-origin: top;
+      transition: transform 0.55s cubic-bezier(.77,0,.18,1);
+    }
+
+    /* Entrée sur la page : les panneaux se rétractent */
+    #page-veil.veil-out .veil-panel {
+      transform: scaleY(0);
+      transform-origin: top;
+    }
+
+    /* Sortie : les panneaux s'étendent depuis le bas */
+    #page-veil.veil-in .veil-panel {
+      transform: scaleY(1);
+      transform-origin: bottom;
+    }
+
+    /* Décalages en cascade pour l'effet "store" */
+    #page-veil .veil-panel:nth-child(1) { transition-delay: 0s; }
+    #page-veil .veil-panel:nth-child(2) { transition-delay: 0.04s; }
+    #page-veil .veil-panel:nth-child(3) { transition-delay: 0.08s; }
+    #page-veil .veil-panel:nth-child(4) { transition-delay: 0.12s; }
+    #page-veil .veil-panel:nth-child(5) { transition-delay: 0.16s; }
+
+    /* Ligne de scan sur le veil */
+    #page-veil::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0;
+      height: 2px;
+      background: var(--cyan, #00F5FF);
+      box-shadow: 0 0 18px var(--cyan, #00F5FF), 0 0 40px var(--cyan, #00F5FF);
+      opacity: 0;
+      top: 50%;
+      transition: opacity 0.3s ease;
+    }
+    #page-veil.veil-in::after {
+      opacity: 1;
+      animation: scan-sweep 0.6s ease forwards;
+    }
+    @keyframes scan-sweep {
+      0%   { top: 0%; }
+      100% { top: 100%; }
+    }
+  </style>
+</head>
+
+<body class="{% block body_class %}{% endblock %}">
+
+  <!-- Flash messages Flask -->
+  <div class="flash-wrap">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for cat, msg in messages %}
+        <div class="flash {{ cat }}">{{ msg }}</div>
+      {% endfor %}
+    {% endwith %}
+  </div>
+
+  <!-- ═══ TRANSITION OVERLAY ═══ -->
+  <div id="page-veil" class="veil-out">
+    <div class="veil-panel"></div>
+    <div class="veil-panel"></div>
+    <div class="veil-panel"></div>
+    <div class="veil-panel"></div>
+    <div class="veil-panel"></div>
+  </div>
+
+  <!-- ═══ ART TRANSITION OVERLAY (Cercle) ═══ -->
+  <div id="art-transition-circle" class="art-transition-circle" style="opacity: 0; pointer-events: none;"></div>
+
+  <!-- ═══ GAMEDEV TRANSITION OVERLAY (Spécifique) ═══ -->
+  <div id="gd-transition" class="gd-transition-overlay">
+    <div class="gd-panel gd-panel-top"></div>
+    <div class="gd-panel gd-panel-bottom"></div>
+    <div class="gd-loader">
+      <div class="bar1"></div>
+      <div class="bar2"></div>
+      <div class="bar3"></div>
+      <div class="bar4"></div>
+      <div class="bar5"></div>
+      <div class="bar6"></div>
+    </div>
+  </div>
+
+  <!-- Effets de fond -->
+  {% block background_effects %}
+  <div id="particles-js"></div>
+  <div class="bg-grid"></div>
+  <div class="scanlines"></div>
+  {% endblock %}
+
+  {% block header %}
+  <header id="navbar">
+    <div class="nav-logo nav-glitch" data-text="M!ll!@rd0.">M!ll!<span class="arobase">@</span>rd0<span class="point">.</span></div>
+  </header>
+  {% endblock %}
+
+  <!-- Contenu de la page -->
+  {% block content %}{% endblock %}
+
+  <div class="cur" id="cur"></div>
+
+  <!-- JS global -->
+  {% block background_js %}
+  <script src="{{ url_for('static', filename='js/particles.min.js') }}"></script>
+  <script>
+    particlesJS.load('particles-js', '{{ url_for("static", filename="js/particles-config.json") }}', function() {
+      console.log('particles.js loaded');
+    });
+  </script>
+  {% endblock %}
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+  <script>
+    // Auto-dismiss flash after 4s
+    document.querySelectorAll('.flash').forEach(el => {
+      setTimeout(() => el.style.opacity = '0', 3800);
+      setTimeout(() => el.remove(), 4200);
+    });
+  </script>
+
+  <!-- ═══ PAGE TRANSITION ENGINE ═══ -->
+  <script>
+  (function() {
+    const veil = document.getElementById('page-veil');
+    const gdVeil = document.getElementById('gd-transition');
+    const artCircle = document.getElementById('art-transition-circle');
+    if (!veil || !gdVeil || !artCircle) return;
+
+    const isGameDevPage = window.location.pathname.includes('/projet/games');
+    const isArtPage = window.location.pathname.includes('/projet/art');
+
+    /* Révéler la page à l'arrivée */
+    function revealPage() {
+      // 1. Retour d'Art
+      if (sessionStorage.getItem('fromArt')) {
+        artCircle.classList.add('active'); 
+        artCircle.style.opacity = '1';
+        setTimeout(() => {
+          artCircle.style.transition = 'transform 1.2s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.8s ease';
+          artCircle.style.opacity = '0';
+          artCircle.classList.remove('active');
+          setTimeout(() => {
+            artCircle.style.opacity = '';
+            artCircle.style.transition = '';
+            sessionStorage.removeItem('fromArt');
+          }, 1200);
+        }, 50);
+        veil.style.display = 'none';
+      } 
+      // 2. Retour de GameDev
+      else if (sessionStorage.getItem('fromGameDev')) {
+        gdVeil.style.visibility = 'visible';
+        gdVeil.classList.add('gd-transition-active');
+        veil.style.display = 'none';
+        
+        setTimeout(() => {
+          const loader = gdVeil.querySelector('.gd-loader');
+          if(loader) loader.style.opacity = '0';
+          setTimeout(() => {
+            gdVeil.classList.remove('gd-transition-active');
+            gdVeil.classList.add('gd-transition-opening');
+            setTimeout(() => {
+              gdVeil.style.visibility = 'hidden';
+              gdVeil.classList.remove('gd-transition-opening');
+              sessionStorage.removeItem('fromGameDev');
+            }, 700);
+          }, 300);
+        }, 100);
+      } 
+      // 3. Mode Standard
+      else {
+        veil.style.display = 'flex';
+        veil.classList.add('veil-out');
+        veil.classList.remove('veil-in');
+      }
+      veil.style.pointerEvents = 'none';
+    }
+
+    /* Fermer la page avant navigation */
+    function coverPage(href, triggerEl = null) {
+      // 🎯 TRANSITION ART (Cercle)
+      if (href.includes('/projet/art')) {
+        sessionStorage.setItem('fromArt', 'true');
+        
+        // Si on a l'élément déclencheur (l'ORB), on centre le cercle dessus
+        if (triggerEl) {
+          const rect = triggerEl.getBoundingClientRect();
+          const centerX = rect.left + rect.width / 2;
+          const centerY = rect.top + rect.height / 2;
+          artCircle.style.left = centerX + 'px';
+          artCircle.style.top = centerY + 'px';
+        }
+        
+        artCircle.classList.add('active');
+        setTimeout(() => { window.location.href = href; }, 1000);
+      }
+      // 🎯 TRANSITION GAMEDEV (Volets)
+      else if (href.includes('/projet/games') || href.includes('/projet/gamedev') || (isGameDevPage && (href === window.location.origin + '/' || href === '/'))) {
+        veil.style.display = 'none';
+        gdVeil.style.visibility = 'visible';
+        sessionStorage.setItem('fromGameDev', 'true');
+        gdVeil.classList.add('gd-transition-active');
+        setTimeout(() => { window.location.href = href; }, 1300);
+      } 
+      // 🎯 TRANSITION STANDARD (Store)
+      else {
+        veil.style.display = 'flex';
+        veil.style.pointerEvents = 'all';
+        veil.classList.remove('veil-out');
+        veil.classList.add('veil-in');
+        setTimeout(() => { window.location.href = href; }, 750);
+      }
+    }
+
+    /* Écouteur global de clics */
+    document.addEventListener('click', function(e) {
+      // On cherche si on a cliqué sur un lien ou un segment
+      const target = e.target.closest('a, .seg');
+      if (!target) return;
+
+      const href = target.getAttribute('href') || (target.classList.contains('seg-art') ? '/projet/art' : null);
+      if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:') || target.getAttribute('target') === '_blank') return;
+
+      // Vérifier si c'est un lien interne
+      const targetUrl = new URL(href, window.location.origin);
+      if (targetUrl.hostname !== window.location.hostname) return;
+
+      e.preventDefault();
+      coverPage(targetUrl.href, target);
+    }, true); // Use capture to intercept before other handlers
+
+    window.addEventListener('pageshow', revealPage);
+    window.addEventListener('load', revealPage);
+  })();
+  </script>
+
+  <!-- JS spécifique à la page (optionnel) -->
+  {% block extra_js %}{% endblock %}
+  <script src="/static/push.js"></script>
+</body>
+</html>

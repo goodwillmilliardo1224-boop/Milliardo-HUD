@@ -1,0 +1,9 @@
+Flask==3.0.3
+python-dotenv
+flask-limiter
+flask-talisman
+flask-mail
+flask-sqlalchemy>=3.1.1
+pywebpush
+
+supabase

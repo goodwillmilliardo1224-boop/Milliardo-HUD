@@ -1,0 +1,514 @@
+/* ═══════════════════════════════════════════════════════════
+   CSS GAMEDEV - PALETTE CHERRY COLA
+   #9A0002 = Cherry Cola (rouge bordeaux)
+   #EFE6DE = Cream Vanilla (blanc cassé)
+   ═══════════════════════════════════════════════════════════ */
+
+@font-face {
+    font-family: 'CyberHorizon';
+    src: url('/static/fonts/CyberHorizon-ARAvL.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Savery';
+    src: url('/static/fonts/Savery.ttf') format('truetype');
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/* CUSTOM CURSOR - NARUTO KUNAI */
+/* ─────────────────────────────────────────────────────────── */
+
+* {
+    cursor: url('https://cdn.cursors-4u.net/css-previews/animated-spinning-kunai-naruto-243f0567-css.webp') 0 0, auto !important;
+}
+
+@media (hover: none) and (pointer: coarse) {
+    * { cursor: auto !important; }
+}
+
+.cur {
+    display: none !important;
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/* PROFILE & BIO SECTION */
+/* ─────────────────────────────────────────────────────────── */
+
+.gd-profile-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-direction: row-reverse; /* Photo à droite, Bio à gauche */
+    gap: 40px;
+    width: 95%;
+    max-width: 1200px;
+    margin: 40px 0 40px auto;
+    z-index: 10;
+    position: relative;
+    flex-wrap: wrap;
+    padding-right: 5%;
+}
+
+.gd-card {
+    position: relative;
+    background: rgba(0,0,0,0.85);
+    border: 1px solid #9A0002;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.card-canvas {
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    pointer-events: none;
+}
+
+.gd-profile-card {
+    width: 180px;
+    height: 180px;
+}
+
+.profile-img-wrapper {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    padding: 10px;
+}
+
+.profile-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.8;
+    filter: sepia(100%) hue-rotate(-50deg) saturate(150%) contrast(1.2);
+}
+
+.gd-bio {
+    position: relative;
+    z-index: 10;
+    margin: 0;
+    max-width: 600px;
+    flex: 0 1 auto;
+    border-left: 3px solid #9A0002; /* Bordure à GAUCHE du bloc de texte */
+    padding: 20px 30px;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    animation: fadeSlideUp 1s ease forwards;
+    animation-delay: 0.5s;
+    opacity: 0;
+    text-align: right;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 768px) {
+    .gd-profile-container {
+        flex-direction: column;
+        gap: 30px;
+    }
+    .gd-bio {
+        text-align: center;
+        border-left: none;
+        border-top: 3px solid #9A0002;
+    }
+}
+
+.gd-bio-text {
+    font-family: 'Savery', sans-serif;
+    font-size: 1.05rem;
+    color: #EFE6DE;
+    line-height: 1.9;
+    letter-spacing: 1px;
+    text-shadow: 0 0 10px rgba(239, 230, 222, 0.2);
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/* RESET */
+/* ─────────────────────────────────────────────────────────── */
+
+html {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    color: #EFE6DE;
+    font-family: 'Oxanium', sans-serif;
+    background: #000; /* Retour au noir */
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/* LOGO GAMEDEV */
+/* ─────────────────────────────────────────────────────────── */
+
+.nav-logo.gd-logo {
+    font-family: 'CyberHorizon', sans-serif !important;
+    font-size: 1.6rem !important;
+    letter-spacing: 3px;
+    color: #9A0002 !important;
+    text-shadow: 0 0 10px rgba(154, 0, 2, 0.4);
+}
+
+.gd-logo .gd-at {
+    color: #EFE6DE !important;
+    text-shadow: 0 0 10px rgba(239, 230, 222, 0.4);
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/* BACKGROUND IMAGE */
+/* ─────────────────────────────────────────────────────────── */
+
+.bg-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    display: block;
+}
+
+#bg-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/* CONTENEUR PRINCIPAL */
+/* ─────────────────────────────────────────────────────────── */
+
+.gd-universe {
+    position: relative;
+    z-index: 1;
+    min-height: 200vh; /* Permet le scroll */
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 0 !important;
+    margin-top: 80px; /* Ajusté à 80px selon demande */
+}
+
+@keyframes fadeSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/* BOUTON COURONNE */
+/* ─────────────────────────────────────────────────────────── */
+
+.btn-crown-link {
+    text-decoration: none;
+    display: block;
+}
+
+.btn-crown {
+    border: none;
+    position: absolute;
+    width: 200px;
+    height: 73px;
+    padding: 0;
+    z-index: 1000;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%) translateY(8px);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='868' width='2500' viewBox='0 0 726 252.17'%3E%3Cpath d='M483.92 0S481.38 24.71 466 40.11c-11.74 11.74-24.09 12.66-40.26 15.07-9.42 1.41-29.7 3.77-34.81-.79-2.37-2.11-3-21-3.22-27.62-.21-6.92-1.36-16.52-2.82-18-.75 3.06-2.49 11.53-3.09 13.61S378.49 34.3 378 36a85.13 85.13 0 0 0-30.09 0c-.46-1.67-3.17-11.48-3.77-13.56s-2.34-10.55-3.09-13.61c-1.45 1.45-2.61 11.05-2.82 18-.21 6.67-.84 25.51-3.22 27.62-5.11 4.56-25.38 2.2-34.8.79-16.16-2.47-28.51-3.39-40.21-15.13C244.57 24.71 242 0 242 0H0s69.52 22.74 97.52 68.59c16.56 27.11 14.14 58.49 9.92 74.73C170 140 221.46 140 273 158.57c69.23 24.93 83.2 76.19 90 93.6 6.77-17.41 20.75-68.67 90-93.6 51.54-18.56 103-18.59 165.56-15.25-4.21-16.24-6.63-47.62 9.93-74.73C656.43 22.74 726 0 726 0z'/%3E%3C/svg%3E") no-repeat 50% 50%;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='868' width='2500' viewBox='0 0 726 252.17'%3E%3Cpath d='M483.92 0S481.38 24.71 466 40.11c-11.74 11.74-24.09 12.66-40.26 15.07-9.42 1.41-29.7 3.77-34.81-.79-2.37-2.11-3-21-3.22-27.62-.21-6.92-1.36-16.52-2.82-18-.75 3.06-2.49 11.53-3.09 13.61S378.49 34.3 378 36a85.13 85.13 0 0 0-30.09 0c-.46-1.67-3.17-11.48-3.77-13.56s-2.34-10.55-3.09-13.61c-1.45 1.45-2.61 11.05-2.82 18-.21 6.67-.84 25.51-3.22 27.62-5.11 4.56-25.38 2.2-34.8.79-16.16-2.47-28.51-3.39-40.21-15.13C244.57 24.71 242 0 242 0H0s69.52 22.74 97.52 68.59c16.56 27.11 14.14 58.49 9.92 74.73C170 140 221.46 140 273 158.57c69.23 24.93 83.2 76.19 90 93.6 6.77-17.41 20.75-68.67 90-93.6 51.54-18.56 103-18.59 165.56-15.25-4.21-16.24-6.63-47.62 9.93-74.73C656.43 22.74 726 0 726 0z'/%3E%3C/svg%3E") no-repeat 50% 50%;
+    -webkit-mask-size: 100%;
+    mask-size: 100%;
+    cursor: pointer;
+    background-color: #9A0002;
+    transition: all 0.3s ease;
+}
+
+.btn-crown:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    box-shadow: 0px 0 0 0 #9A0002;
+    transition: all 2s ease;
+}
+
+.btn-crown:hover:after {
+    box-shadow: 0px -13px 56px 12px rgba(154, 0, 2, 0.6);
+}
+
+.btn-crown:hover {
+    background-color: #EFE6DE;
+}
+
+.btn-crown span {
+    position: absolute;
+    width: 100%;
+    font-size: 14px;
+    font-weight: 400;
+    left: 50%;
+    top: 42%;
+    letter-spacing: 1px;
+    text-align: center;
+    transform: translate(-50%,-50%);
+    color: #EFE6DE;
+    transition: all 0.5s ease;
+    cursor: pointer;
+    font-family: 'CyberHorizon', sans-serif;
+    text-transform: uppercase;
+    z-index: 2;
+}
+
+.btn-crown:hover span {
+    color: #9A0002;
+}
+
+.btn-crown:before {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 100%;
+    background-color: #EFE6DE;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.6s ease;
+}
+
+.btn-crown:hover:before {
+    width: 100%;
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/* HERO SECTION */
+/* ─────────────────────────────────────────────────────────── */
+
+.gd-hero {
+    margin-top: 0; /* Margin supprimée */
+    text-align: left;
+    width: 90%;
+    max-width: 1200px;
+    position: relative;
+    top: 0; /* Remis à zéro */
+    align-self: flex-start;
+    margin-left: 5%;
+}
+
+.title-container {
+    margin-bottom: 1rem;
+    margin-top: 0; /* Margin supprimée */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.gd-title-img {
+    max-width: 80%;
+    height: auto;
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/* SOUS-TITRE */
+/* ─────────────────────────────────────────────────────────── */
+
+.gd-subtitle {
+    font-size: 1.2rem;
+    letter-spacing: 5px;
+    color: #EFE6DE;
+    text-shadow: 0 0 10px rgba(239, 230, 222, 0.5);
+    font-weight: 300;
+    margin-top: 2rem;
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/* ANIMATIONS */
+/* ─────────────────────────────────────────────────────────── */
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/* SOCIAL ICONS - VALORANT STYLE */
+/* ─────────────────────────────────────────────────────────── */
+
+.social-container {
+  position: fixed;
+  bottom: 40px; /* Aligné sur Art */
+  left: 70px;   /* Aligné sur Art */
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  z-index: 1001;
+}
+
+.ic-valo {
+  appearance: none;
+  border: none;
+  background: none;
+  cursor: pointer;
+  position: relative;
+  padding: 4px;
+  text-decoration: none;
+  display: inline-block;
+  transition: all .15s ease;
+  color: #9A0002;
+}
+
+.ic-valo::before,
+.ic-valo::after {
+  content: '';
+  display: block;
+  position: absolute;
+  right: 0; left: 0;
+  height: calc(50% - 3px);
+  border: 1.2px solid #9A0002;
+  transition: all .15s ease;
+}
+
+.ic-valo::before { top: 0; border-bottom-width: 0; }
+.ic-valo::after  { bottom: 0; border-top-width: 0; }
+
+.ic-valo:active::before,
+.ic-valo:active::after { right: 2px; left: 2px; }
+.ic-valo:active::before { top: 2px; }
+.ic-valo:active::after  { bottom: 2px; }
+
+.ic-valo_inner {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 48px;  /* Aligné sur Art */
+  height: 48px; /* Aligné sur Art */
+  color: #EFE6DE;
+  background-color: #9A0002;
+  overflow: hidden;
+  font-size: 20px; /* Adapté à la nouvelle taille */
+  box-shadow: inset 0px 0px 0px 1px transparent;
+}
+
+.ic-valo_inner::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0; left: 0;
+  width: 2px; height: 2px;
+  background-color: #9A0002;
+}
+
+.ic-valo_inner::after {
+  content: '';
+  display: block;
+  position: absolute;
+  right: 0; bottom: 0;
+  width: 4px; height: 4px;
+  background-color: #9A0002;
+  transition: all .2s ease;
+}
+
+.ic-valo_sl {
+  display: block;
+  position: absolute;
+  top: 0; bottom: -1px;
+  left: -8px;
+  width: 0;
+  background-color: #EFE6DE;
+  transform: skew(-15deg);
+  transition: all .2s ease;
+}
+
+.ic-valo_icon {
+  position: relative;
+  z-index: 2;
+  transition: color .2s ease;
+}
+
+/* Au survol — slider Cream Vanilla sur fond Cherry Cola */
+.ic-valo:hover .ic-valo_sl           { width: calc(100% + 15px); }
+.ic-valo:hover .ic-valo_icon         { color: #9A0002; }
+.ic-valo:hover .ic-valo_inner::after { background-color: #EFE6DE; }
+
+/* ─────────────────────────────────────────────────────────── */
+/* RESPONSIVE */
+/* ─────────────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+    .gd-universe {
+        margin-top: 150px;
+    }
+    .social-container {
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: 30px;
+    }
+    .btn-crown {
+        width: 140px;
+        height: 50px;
+        top: 85px;
+        right: 10px;
+    }
+    .btn-crown span {
+        font-size: 11px;
+    }
+    .gd-hero {
+        margin-top: -50px;
+        top: -20px;
+    }
+    .title-container {
+        margin-top: -30px;
+    }
+    .gd-deployment-msg {
+        margin-top: 40px;
+        font-size: 1.1rem;
+        letter-spacing: 1px;
+        display: block;
+        width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .btn-crown {
+        width: 110px;
+        height: 40px;
+        top: 85px;
+        right: 8px;
+    }
+    .gd-hero {
+        margin-top: -40px;
+        top: -15px;
+    }
+    .title-container {
+        margin-top: -20px;
+    }
+    .gd-deployment-msg {
+        font-size: 0.95rem;
+        letter-spacing: 0.5px;
+        white-space: normal;
+        line-height: 1.4;
+    }
+}
+
+@media (hover: none) and (pointer: coarse) {
+    * { cursor: auto !important; }
+}

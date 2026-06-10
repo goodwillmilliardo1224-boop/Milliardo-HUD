@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}CyberSec — m!ll!@rd0{% endblock %}
+
+{% block favicon %}
+<link rel="icon" type="image/png" href="{{ url_for('static', filename='img/cybersecicon.png') }}">
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/cyber/style.css') }}"/>
+{% endblock %}
+
+{% block header %}
+<header id="cyber-header">
+    <div class="header-controls">
+        <span class="dot dot-close"></span>
+        <span class="dot dot-min"></span>
+        <span class="dot dot-max"></span>
+    </div>
+    <div class="header-brand">MILLIARDO<span class="header-sub-brand">CYBER SEC</span></div>
+    <a href="/" class="cyber-header-home">HOME</a>
+</header>
+{% endblock %}
+
+{% block content %}
+<div id="intro-screen">
+    <div class="mini-square-blink"></div>
+    <div class="press-text">PRESS ANY KEY</div>
+</div>
+
+<canvas id="bg-logs-canvas"></canvas>
+
+<main id="terminal-screen" class="hidden">
+    <div id="cyber-page-body">
+        
+        <div id="terminal-content"></div>
+        
+        <div id="hero-title-container">
+            <div id="titles-wrapper">
+                <h1 class="main-hero-title">milli@rd0<span>_</span></h1>
+                <div class="sub-hero-title">cybersecurity student // developer</div>
+            </div>
+
+            <!-- ZONE DE CHAT INTÉGRÉE -->
+            <div id="chat-display-area" class="hidden"></div>
+            
+            <div class="tabs-wrapper">
+                <button class="tabs-arrow left" id="tabs-left">&#8249;</button>
+                <div class="hud-navigation-tabs" id="tabs-scroll">
+                    <button class="nav-tab special" onclick="handleTabClick('/help')">/help</button>
+                    <button class="nav-tab" onclick="handleTabClick('/full-access')">/Tout savoir</button>
+                    <button class="nav-tab" onclick="handleTabClick('/about')">/Bio & À propos</button>
+                    <button class="nav-tab" onclick="handleTabClick('/projects')">/Mes Projets</button>
+                    <button class="nav-tab" onclick="handleTabClick('quels sont tes objectifs ?')">/Objectifs</button>
+                    <button class="nav-tab" onclick="handleTabClick('/stack')">/stack</button>
+                    <button class="nav-tab" onclick="handleTabClick('/contact')">/contact</button>
+                </div>
+                <button class="tabs-arrow right" id="tabs-right">&#8250;</button>
+            </div>
+
+            <div class="cmd-input-container" onclick="focusInputField()">
+                <div class="cmd-left-wrapper">
+                    <label for="terminal-input" class="cmd-user-prefix">will@milliardo:~$</label>
+                    <input 
+                        type="text" 
+                        id="terminal-input" 
+                        class="cmd-real-input" 
+                        placeholder="ask me anything · press / for commands"
+                        autocomplete="off"
+                        spellcheck="false"
+                    >
+                </div>
+                <div class="cmd-right-controls">
+                    <button class="cmd-btn-box" onclick="insertSlash(event)">/</button>
+                    <button class="cmd-btn-arrow" onclick="submitCommand(event)">↑</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- DOCK SOCIAL -->
+        <div id="social-dock">
+            <a href="tel:+2290153272843" class="social-item" title="Téléphone">
+                <i class="fa-solid fa-phone"></i>
+            </a>
+            <a href="https://github.com/goodwillmilliardo1224-boop" target="_blank" class="social-item" title="GitHub">
+                <i class="fa-brands fa-github"></i>
+            </a>
+            <a href="https://discord.com/users/milliardo1224" target="_blank" class="social-item" title="Discord">
+                <i class="fa-brands fa-discord"></i>
+            </a>
+            <a href="mailto:goodwillmilliardo1224@gmail.com" class="social-item" title="Email">
+                <i class="fa-solid fa-envelope"></i>
+            </a>
+        </div>
+
+    </div>
+</main>
+
+<div id="cur">
+    <span class="cur-dot"></span>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/cyber/main.js') }}?v=1.1"></script>
+{% endblock %}

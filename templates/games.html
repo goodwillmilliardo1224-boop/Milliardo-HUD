@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}GameDev — m!ll!@rd0{% endblock %}
+
+{% block favicon %}
+<link rel="icon" type="image/png" href="{{ url_for('static', filename='img/gameicon.png') }}">
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/games/style.css') }}"/>
+<!-- Animated Spinning Kunai - Naruto - https://www.cursors-4u.com/cursor/animated-spinning-kunai-naruto -->
+<link rel="stylesheet" href="https://cdn.cursors-4u.net/cursors/animated/animated-spinning-kunai-naruto-7a71ef62-32.css">
+<!-- End www.Cursors-4U.com Code -->
+{% endblock %}
+
+{% block background_effects %}
+<!-- Arrière-plan image -->
+<div class="bg-container">
+    <img src="{{ url_for('static', filename='img/gamefond.jpg') }}" alt="Background" id="bg-image">
+    <div class="video-overlay"></div>
+</div>
+{% endblock %}
+
+{% block header %}
+<header id="navbar">
+    <div class="nav-logo nav-glitch gd-logo" data-text="MILLI@RD0">MILLI<span class="gd-at">@</span>RD0</div>
+    <a href="/" class="btn-crown-link">
+        <button class="btn-crown" title="Menu">
+            <span>EXIT_SESSION_</span>
+        </button>
+    </a>
+</header>
+{% endblock %}
+
+{% block content %}
+<main class="universe-main gd-universe">
+    <section class="gd-hero">
+        <div class="title-container">
+            <img src="{{ url_for('static', filename='img/gametitle.png') }}" alt="Game Dev" class="gd-title-img">
+        </div>
+    </section>
+
+    <!-- Profil & Bio Section -->
+    <div class="gd-profile-container">
+        <div class="gd-card gd-profile-card">
+            <canvas class="card-canvas"></canvas>
+            <div class="profile-img-wrapper">
+                <img src="{{ url_for('static', filename='img/gameicon.png') }}" alt="Profile" class="profile-img">
+            </div>
+        </div>
+
+        <section class="gd-bio">
+            <p class="gd-bio-text">
+                Pour moi, le cœur d'un bon jeu réside dans la précision de ses contrôles
+                et la fluidité de ses boucles de gameplay. Inspiré par les boss-fights
+                millimétrés et les jeux d'action exigeants, je me spécialise dans la forge
+                de systèmes de combat rigoureux, la gestion des frames et l'optimisation
+                bas niveau.<br><br>
+                Mon but : créer des expériences où l'immersion naît de la simplicité.
+            </p>
+        </section>
+    </div>
+
+    <!-- Dock Social - Valorant Style (Bas Gauche) -->
+    <div class="social-container">
+        <!-- Gmail -->
+        <a href="mailto:goodwillmilliardo1224@gmail.com" class="ic-valo gm" title="Gmail">
+            <span class="ic-valo_inner">
+                <span class="ic-valo_sl"></span>
+                <i class="fas fa-envelope ic-valo_icon"></i>
+            </span>
+        </a>
+        <!-- WhatsApp -->
+        <a href="https://wa.me/2290153272843" class="ic-valo wa" title="WhatsApp">
+            <span class="ic-valo_inner">
+                <span class="ic-valo_sl"></span>
+                <i class="fab fa-whatsapp ic-valo_icon"></i>
+            </span>
+        </a>
+        <!-- Discord -->
+        <a href="https://discord.com/users/milliardo1224" class="ic-valo dc" title="Discord">
+            <span class="ic-valo_inner">
+                <span class="ic-valo_sl"></span>
+                <i class="fab fa-discord ic-valo_icon"></i>
+            </span>
+        </a>
+        <!-- GitHub -->
+        <a href="https://github.com/goodwillmilliardo1224-boop" class="ic-valo gh" title="GitHub">
+            <span class="ic-valo_inner">
+                <span class="ic-valo_sl"></span>
+                <i class="fab fa-github ic-valo_icon"></i>
+            </span>
+        </a>
+    </div>
+</main>
+{% endblock %}
+
+{% block background_js %}
+<!-- Script particules désactivé -->
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/games/main.js') }}"></script>
+{% endblock %}
