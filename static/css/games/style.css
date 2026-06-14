@@ -84,6 +84,47 @@ body {
 }
 #navbar.is-visible { opacity: 1; transform: translateY(0); }
 
+/* --- LIENS NAVIGATION HEADER --- */
+.nav-liens-header {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    margin-left: auto;   /* Pousse les liens vers la droite (vers le bouton home) */
+    margin-right: 50px;  /* Espace de sécurité avant le bouton de sortie */
+}
+
+.nav-liens-header a {
+    color: #fff;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    position: relative;
+    padding: 10px 0;
+    transition: color 0.3s ease;
+    font-family: 'Oxanium', sans-serif;
+}
+
+.nav-liens-header a::after {
+    content: '';
+    position: absolute;
+    bottom: 5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #9A0002;
+    transition: width 0.3s ease;
+}
+
+.nav-liens-header a:hover {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.nav-liens-header a:hover::after {
+    width: 100%;
+}
+
 .logo-milliardo {
     position: relative;
     font-family: 'CyberHorizon', sans-serif !important;
@@ -123,6 +164,29 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+/* ── EFFET ÉMERGENCE PAR LIGNE ── */
+.line-wrap {
+    overflow: hidden;
+    line-height: 1.4;
+    margin-bottom: 2px;
+}
+
+.line-inner {
+    display: block;
+    transform: translateY(100%);
+    opacity: 0;
+}
+
+@keyframes emerge {
+    0%   { transform: translateY(100%); opacity: 0; }
+    60%  { opacity: 1; }
+    100% { transform: translateY(0);    opacity: 1; }
+}
+
+.line-inner.playing {
+    animation: emerge 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 /* ══════════════════════════════════════
