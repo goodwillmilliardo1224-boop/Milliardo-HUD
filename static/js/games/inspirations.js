@@ -76,6 +76,24 @@
                 </div>
             `).join("");
 
+            /* ── Émergence au Scroll Harmonisée (Entrée/Sortie) ── */
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: "0px 0px -50px 0px"
+            };
+
+            const cardObserver = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    } else {
+                        entry.target.classList.remove('is-visible');
+                    }
+                });
+            }, observerOptions);
+
+            gridEl.querySelectorAll('.card-game').forEach(card => cardObserver.observe(card));
+
             filtersEl.querySelectorAll('.filter-btn').forEach(btn => {
                 btn.onclick = (e) => {
                     e.stopPropagation(); // Empêche le clic du bouton de déclencher le clic de la carte
