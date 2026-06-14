@@ -3,102 +3,335 @@
 {% block title %}GameDev — m!ll!@rd0{% endblock %}
 
 {% block favicon %}
-<link rel="icon" type="image/png" href="{{ url_for('static', filename='img/gameicon.png') }}">
+<link rel="icon" type="image/png" href="{{ url_for('static', filename=('img/gameicon.png' | optimize)) }}">
 {% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/games/style.css') }}"/>
 <!-- Animated Spinning Kunai - Naruto - https://www.cursors-4u.com/cursor/animated-spinning-kunai-naruto -->
 <link rel="stylesheet" href="https://cdn.cursors-4u.net/cursors/animated/animated-spinning-kunai-naruto-7a71ef62-32.css">
-<!-- End www.Cursors-4U.com Code -->
 {% endblock %}
 
 {% block background_effects %}
 <!-- Arrière-plan image -->
-<div class="bg-container">
-    <img src="{{ url_for('static', filename='img/gamefond.jpg') }}" alt="Background" id="bg-image">
-    <div class="video-overlay"></div>
+<div class="conteneur-fond">
+    <img src="{{ url_for('static', filename=('img/gamefond.png' | optimize)) }}" alt="Background" id="image-fond">
+    <div class="overlay-video"></div>
 </div>
 {% endblock %}
 
 {% block header %}
 <header id="navbar">
-    <div class="nav-logo nav-glitch gd-logo" data-text="MILLI@RD0">MILLI<span class="gd-at">@</span>RD0</div>
-    <a href="/" class="btn-crown-link">
-        <button class="btn-crown" title="Menu">
-            <span>EXIT_SESSION_</span>
-        </button>
+    <div class="logo-milliardo nav-glitch" data-text="MILLI@RD0">MILLI<span class="at-rouge">@</span>RD0</div>
+    <a href="/" class="bouton-valorant bouton-sortie-rect" title="Menu">
+        <span class="bouton-valorant-interieur">
+            <span class="effet-glissement"></span>
+            <span class="texte-bouton-rect">EXIT_SESSION_</span>
+        </span>
     </a>
 </header>
 {% endblock %}
 
 {% block content %}
-<main class="universe-main gd-universe">
-    <section class="gd-hero">
-        <div class="title-container">
-            <img src="{{ url_for('static', filename='img/gametitle.png') }}" alt="Game Dev" class="gd-title-img">
+<main class="univers-gamedev">
+    
+    <!-- Section Titre -->
+    <section class="section-hero" id="hero">
+        <div class="groupe-titre">
+            <img src="{{ url_for('static', filename=('img/gametitle.png' | optimize)) }}" alt="Game Dev" id="hero-logo" class="image-titre-principal">
         </div>
     </section>
 
-    <!-- Profil & Bio Section -->
-    <div class="gd-profile-container">
-        <div class="gd-card gd-profile-card">
-            <canvas class="card-canvas"></canvas>
-            <div class="profile-img-wrapper">
-                <img src="{{ url_for('static', filename='img/gameicon.png') }}" alt="Profile" class="profile-img">
-            </div>
-        </div>
+    <!-- Zone de transition pour le scroll -->
+    <div id="hero-spacer"></div>
 
-        <section class="gd-bio">
-            <p class="gd-bio-text">
-                Pour moi, le cœur d'un bon jeu réside dans la précision de ses contrôles
-                et la fluidité de ses boucles de gameplay. Inspiré par les boss-fights
-                millimétrés et les jeux d'action exigeants, je me spécialise dans la forge
-                de systèmes de combat rigoureux, la gestion des frames et l'optimisation
-                bas niveau.<br><br>
-                Mon but : créer des expériences où l'immersion naît de la simplicité.
-            </p>
-        </section>
+    <!-- Nouveau Conteneur Glassmorphism (Visible au scroll) -->
+    <section class="vitrine-glass" id="first-block">
+        <h2 class="titre-bio">DJODBENOU<br>Goodwill</h2>
+        
+        <p class="texte-bio">
+            <strong>Game Designer 2D | Spécialiste Boss Design & Gameplay (Unity)</strong><br><br>
+            Nouveau venu dans l'industrie mais animé par une détermination sans faille, je me spécialise dans la conception de boss pour jeux en 2D sous le moteur Unity. Passionné par la création d'affrontements épiques et mémorables, mon objectif est de concevoir des combats intenses, équilibrés et riches en mécaniques, où chaque pattern de boss met au défi les réflexes et la stratégie du joueur.<br><br>
+            Actuellement focalisé sur le développement de prototypes et de mini-projets techniques, j'explore en profondeur les concepts fondamentaux du jeu vidéo (State Machines, IA de combat, gestion des collisions et feedbacks) pour parfaire mes compétences et concevoir les boss de demain.
+        </p>
+
+        <img src="{{ url_for('static', filename=('img/moi-1.png' | optimize)) }}" alt="Moi" class="image-moi-vitrine">
+    </section>
+
+    <!-- SECTION TIMELINE DES PROJETS (INTERACTIVE v5) -->
+    <div class="section-title">
+        <h1>Mes Projets</h1>
     </div>
 
-    <!-- Dock Social - Valorant Style (Bas Gauche) -->
-    <div class="social-container">
+    <div class="timeline-wrapper" id="wrapper">
+      <div class="residual-line"></div>
+
+      <!-- Panneau gauche -->
+      <div class="detail-panel from-left" id="panel-left">
+        <div class="panel-scroll" id="scroll-left">
+          <div class="panel-eyebrow" id="pl-eyebrow"></div>
+          <h2 class="panel-title" id="pl-title"></h2>
+          <div class="panel-company" id="pl-company"></div>
+          <div id="pl-body"></div>
+          <div class="panel-tags" id="pl-tags"></div>
+        </div>
+        <div class="panel-fade"></div>
+        <div class="panel-footer">
+          <button class="btn-close" onclick="closePanel()">Retour à la timeline</button>
+        </div>
+      </div>
+
+      <!-- Panneau droit -->
+      <div class="detail-panel from-right" id="panel-right">
+        <div class="panel-scroll" id="scroll-right">
+          <div class="panel-eyebrow" id="pr-eyebrow"></div>
+          <h2 class="panel-title" id="pr-title"></h2>
+          <div class="panel-company" id="pr-company"></div>
+          <div id="pr-body"></div>
+          <div class="panel-tags" id="pr-tags"></div>
+        </div>
+        <div class="panel-fade"></div>
+        <div class="panel-footer">
+          <button class="btn-close" onclick="closePanel()">Retour à la timeline</button>
+        </div>
+      </div>
+
+      <!-- Timeline -->
+      <div class="timeline-container" id="timeline">
+        <div class="timeline-line"></div>
+
+        <div class="timeline-item right" data-id="tresor">
+          <div class="timeline-dot"></div>
+          <span class="tl-line"><span class="tl-inner tl-title">Projet Trésor 🎮</span></span>
+          <span class="tl-line"><span class="tl-inner tl-company">Metroidvania Africain • En cours</span></span>
+          <span class="tl-line"><span class="tl-inner tl-desc">Un Metroidvania 2D ancré dans la culture africaine, visant le marché indépendant mondial.</span></span>
+          <span class="tl-line"><span class="tl-inner"><button class="btn-details" onclick="openPanel(this)">View Details</button></span></span>
+        </div>
+
+        <div class="timeline-item left" data-id="projectx">
+          <div class="timeline-dot"></div>
+          <span class="tl-line"><span class="tl-inner tl-title">Project X</span></span>
+          <span class="tl-line"><span class="tl-inner tl-company">Unity 2D • Action</span></span>
+          <span class="tl-line"><span class="tl-inner tl-desc">Action intense et mécaniques de combat millimétrées.</span></span>
+          <span class="tl-line"><span class="tl-inner"><button class="btn-details" onclick="openPanel(this)">View Details</button></span></span>
+        </div>
+
+        <div class="timeline-item right" data-id="projecty">
+          <div class="timeline-dot"></div>
+          <span class="tl-line"><span class="tl-inner tl-title">Project Y</span></span>
+          <span class="tl-line"><span class="tl-inner tl-company">Unity • RPG Narratif</span></span>
+          <span class="tl-line"><span class="tl-inner tl-desc">Systèmes de dialogue et conséquences narratives.</span></span>
+          <span class="tl-line"><span class="tl-inner"><button class="btn-details" onclick="openPanel(this)">View Details</button></span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION INSPIRATIONS (DYNAMIQUE) -->
+    <section class="section-inspirations">
+        <div class="inspirations-header">
+            <h2>Sources de Design</h2>
+            <h1>Mes Inspirations</h1>
+        </div>
+
+        <div class="filters" id="filters-inspirations"></div>
+        <div class="grid-inspirations" id="grid-inspirations"></div>
+    </section>
+
+    <!-- Barre des Réseaux Sociaux (Style Valorant) -->
+    <div class="zone-reseaux-sociaux">
         <!-- Gmail -->
-        <a href="mailto:goodwillmilliardo1224@gmail.com" class="ic-valo gm" title="Gmail">
-            <span class="ic-valo_inner">
-                <span class="ic-valo_sl"></span>
-                <i class="fas fa-envelope ic-valo_icon"></i>
+        <a href="mailto:goodwillmilliardo1224@gmail.com" class="bouton-valorant" title="Gmail">
+            <span class="bouton-valorant-interieur">
+                <span class="effet-glissement"></span>
+                <i class="fas fa-envelope icone-reseau"></i>
             </span>
         </a>
         <!-- WhatsApp -->
-        <a href="https://wa.me/2290153272843" class="ic-valo wa" title="WhatsApp">
-            <span class="ic-valo_inner">
-                <span class="ic-valo_sl"></span>
-                <i class="fab fa-whatsapp ic-valo_icon"></i>
+        <a href="https://wa.me/2290153272843" class="bouton-valorant" title="WhatsApp">
+            <span class="bouton-valorant-interieur">
+                <span class="effet-glissement"></span>
+                <i class="fab fa-whatsapp icone-reseau"></i>
             </span>
         </a>
         <!-- Discord -->
-        <a href="https://discord.com/users/milliardo1224" class="ic-valo dc" title="Discord">
-            <span class="ic-valo_inner">
-                <span class="ic-valo_sl"></span>
-                <i class="fab fa-discord ic-valo_icon"></i>
+        <a href="https://discord.com/users/milliardo1224" class="bouton-valorant" title="Discord">
+            <span class="bouton-valorant-interieur">
+                <span class="effet-glissement"></span>
+                <i class="fab fa-discord icone-reseau"></i>
             </span>
         </a>
         <!-- GitHub -->
-        <a href="https://github.com/goodwillmilliardo1224-boop" class="ic-valo gh" title="GitHub">
-            <span class="ic-valo_inner">
-                <span class="ic-valo_sl"></span>
-                <i class="fab fa-github ic-valo_icon"></i>
+        <a href="https://github.com/goodwillmilliardo1224-boop" class="bouton-valorant" title="GitHub">
+            <span class="bouton-valorant-interieur">
+                <span class="effet-glissement"></span>
+                <i class="fab fa-github icone-reseau"></i>
             </span>
         </a>
     </div>
 </main>
 {% endblock %}
 
-{% block background_js %}
-<!-- Script particules désactivé -->
-{% endblock %}
-
 {% block extra_js %}
+<script src="{{ url_for('static', filename='js/games/hero-logo-fade.js') }}"></script>
+<script src="{{ url_for('static', filename='js/games/inspirations.js') }}"></script>
 <script src="{{ url_for('static', filename='js/games/main.js') }}"></script>
+<script>
+  /* ════════════════════════════════════════
+     BASE DE DONNÉES DES PROJETS
+  ════════════════════════════════════════ */
+  const PROJECTS = {
+    tresor: {
+      eyebrow: "Projet Phare",
+      title: "La Renaissance du Metroidvania Africain",
+      company: "Projet Indépendant • En développement",
+      tags: ["Metroidvania", "2D", "Bénin", "Indie", "Hollow Knight", "Game Design"],
+      type: "rich",
+      sections: [
+        {
+          title: "Le Constat : Un Marché Vierge à Conquérir",
+          body: "L'Afrique est aujourd'hui le continent de la consommation numérique, mais reste le grand absent de la production mondiale de jeux vidéo. Alors que l'industrie du gaming génère des revenus dépassant ceux du cinéma et de la musique réunis, le potentiel africain — et particulièrement béninois — demeure inexploité. Mon projet ne se contente pas de combler ce vide : il ambitionne de redéfinir les standards de la création indépendante sur le continent."
+        },
+        {
+          title: "La Vision : L'Excellence de la 2D",
+          body: "Loin de vouloir rivaliser avec les budgets colossaux des blockbusters 3D, je mise sur la maîtrise artistique et technique de la 2D. En m'appuyant sur les codes de références mondiales comme Hollow Knight, mon objectif est de créer une œuvre qui s'impose par sa direction artistique et son gameplay, plutôt que par la force brute technologique."
+        }
+      ],
+      pillars: [
+        {
+          title: "Innovation de Gameplay",
+          body: "Le jeu repose sur une mécanique centrale inédite pour le genre Metroidvania, transformant l'interaction passive en une expérience tactique profonde. Je briserai les codes du genre et imposerai une nouvelle façon d'exploiter un milieu aussi sous-estimé face aux géants en 3D."
+        },
+        {
+          title: "Liberté Absolue",
+          body: "Contrairement aux structures linéaires, le joueur dispose d'une autonomie totale dans l'évolution de son personnage (builds) et dans le déroulement de son épopée. Ce classique n'existe pas en 2D comme je l'imagine. Hollow Knight, Silksong, Nine Sol l'ont fait — moi j'agrandis la porte et l'horizon."
+        },
+        {
+          title: "Narration Disruptive",
+          body: "Un scénario riche, jalonné de retournements imprévisibles, conçu pour marquer durablement l'esprit des joueurs. Le joueur doit sortir du jeu avec une vision totalement refaite sur certaines questions d'éthique. J'instaure ici un système de narration jusqu'à là jamais pensé."
+        },
+        {
+          title: "Réalisme et Clarté",
+          body: "Chaque mouvement est optimisé pour le feeling de jeu, éliminant le superflu visuel pour se concentrer sur l'adrénaline pure et l'efficacité du gameplay. L'harmonie des couleurs sera au rendez-vous avec une sensation d'être plus dans un réalisme qu'un jeu en 2D."
+        }
+      ],
+      invest: "Je ne cherche pas seulement à créer un jeu, mais à prouver qu'un développeur indépendant peut, depuis le Bénin, produire une référence internationale. Bien que je ne sois pas le premier à y penser, nos productions restent rares, presque invisibles et ne remportent jamais de prix aux Game Awards. Ce que je vise c'est de citer le nom béninois dans cette industrie tout en visant le trône. C'est une invitation à investir dans une propriété intellectuelle à fort potentiel, sur un marché africain en pleine explosion and une scène indé mondiale toujours en quête de la prochaine pépite."
+    },
+
+    projectx: {
+      eyebrow: "Projet",
+      title: "PROJECT X",
+      company: "Unity 2D • Action",
+      tags: ["Unity 2D", "Action", "Frame Precision", "Hardcore"],
+      type: "simple",
+      body: "Un jeu d'action intense avec des mécaniques de combat millimétrées basées sur la précision des frames. L'objectif est d'offrir une expérience exigeante et gratifiante pour les joueurs hardcore."
+    },
+
+    projecty: {
+      eyebrow: "Projet",
+      title: "PROJECT Y",
+      company: "Unity • RPG Narratif",
+      tags: ["Unity", "RPG", "Narrative", "Choices Matter", "Dialogue System"],
+      type: "simple",
+      body: "Exploration de systèmes de dialogue et de conséquences narratives dans un univers sombre et immersif. Chaque choix du joueur influence l'évolution de l'histoire et les relations entre les personnages."
+    }
+  };
+
+  /* ── Observer ── */
+  const timelineObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('is-visible');
+      else e.target.classList.remove('is-visible');
+    });
+  }, { threshold: 0.2, rootMargin: "0px 0px -50px 0px" });
+
+  document.querySelectorAll('.timeline-item').forEach(i => timelineObserver.observe(i));
+
+  /* ── Build contenu ── */
+  function buildContent(project, bodyEl, tagsEl) {
+    let html = '';
+
+    if (project.type === 'rich') {
+      (project.sections || []).forEach(s => {
+        html += `<div class="panel-section">
+          <div class="panel-section-title">${s.title}</div>
+          <p>${s.body}</p>
+        </div>`;
+      });
+
+      if (project.pillars && project.pillars.length) {
+        html += `<div class="panel-section">
+          <div class="panel-section-title">Pourquoi ce projet va réussir</div>
+          <div class="panel-pillars">`;
+        project.pillars.forEach(p => {
+          html += `<div class="pillar">
+            <div class="pillar-title">${p.title}</div>
+            <div class="pillar-body">${p.body}</div>
+          </div>`;
+        });
+        html += `</div></div>`;
+      }
+
+      if (project.invest) {
+        html += `<div class="panel-invest">
+          <div class="panel-section-title">L'Opportunité · Appel à l'investissement</div>
+          <p>${project.invest}</p>
+        </div>`;
+      }
+    } else {
+      html = `<div class="panel-section"><p>${project.body}</p></div>`;
+    }
+
+    bodyEl.innerHTML = html;
+    tagsEl.innerHTML = (project.tags || []).map(t =>
+      `<span class="panel-tag-item">${t}</span>`
+    ).join('');
+  }
+
+  /* ── Ouvrir panneau ── */
+  function openPanel(btn) {
+    const item    = btn.closest('.timeline-item');
+    const isRight = item.classList.contains('right');
+    const wrapper = document.getElementById('wrapper');
+    const id      = item.dataset.id;
+    const project = PROJECTS[id];
+    if (!project) return;
+
+    const side   = isRight ? 'left' : 'right';
+    const prefix = side === 'left' ? 'pl' : 'pr';
+
+    document.getElementById(`${prefix}-eyebrow`).textContent = project.eyebrow || 'Projet';
+    document.getElementById(`${prefix}-title`).textContent   = project.title;
+    document.getElementById(`${prefix}-company`).textContent = project.company;
+
+    buildContent(
+      project,
+      document.getElementById(`${prefix}-body`),
+      document.getElementById(`${prefix}-tags`)
+    );
+
+    document.getElementById(`scroll-${side}`).scrollTop = 0;
+
+    wrapper.classList.remove('panel-open', 'panel-open-left', 'panel-open-right');
+    wrapper.classList.add('panel-open', `panel-open-${side}`);
+  }
+
+  /* ── Fermer panneau ── */
+  function closePanel() {
+    document.getElementById('wrapper').classList.remove('panel-open', 'panel-open-left', 'panel-open-right');
+  }
+
+  // Fermeture au clic extérieur
+  document.addEventListener('mousedown', (e) => {
+    const wrapper = document.getElementById('wrapper');
+    if (!wrapper.classList.contains('panel-open')) return;
+
+    const panelLeft = document.getElementById('panel-left');
+    const panelRight = document.getElementById('panel-right');
+
+    // Si le clic n'est ni dans le panneau gauche, ni dans le droit
+    if (!panelLeft.contains(e.target) && !panelRight.contains(e.target)) {
+      closePanel();
+    }
+  });
+  </script>
 {% endblock %}

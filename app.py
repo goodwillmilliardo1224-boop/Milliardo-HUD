@@ -21,6 +21,12 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "change-this-in-production-please")
 
+# ── FILTRE OPTIMISATION D'IMAGE ──
+from image_optimizer import get_optimized_image
+@app.template_filter('optimize')
+def optimize_filter(filename):
+    return get_optimized_image(filename)
+
 # ── CONFIGURATION UPLOAD ──
 UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
