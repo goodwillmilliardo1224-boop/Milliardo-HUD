@@ -166,6 +166,7 @@ typedef struct {
     int      pv, pvMaximum;
     Attaque  capacites[4];
     int      niveau;
+    char     symbole;
 } Ennemi;
 
 /* ================================================================
@@ -202,28 +203,48 @@ static void configurer_ennemi(Ennemi *ennemi, int type_ennemi, int niveau_ennemi
 
     switch(type_ennemi) {
         case 1:
-            strcpy(ennemi->nom, "Gobelin");
+            strcpy(ennemi->nom, "Gobelin Mutant");
+            ennemi->symbole = '1';
             ennemi->pvMaximum = (int)(40 * multiplicateur);
             strcpy(ennemi->capacites[0].nom, "Coup de gourdin"); ennemi->capacites[0].degats = (int)(8  * multiplicateur);
             strcpy(ennemi->capacites[1].nom, "Jet de pierre");   ennemi->capacites[1].degats = (int)(6  * multiplicateur);
             strcpy(ennemi->capacites[2].nom, "Morsure");         ennemi->capacites[2].degats = (int)(10 * multiplicateur);
             break;
         case 2:
-            strcpy(ennemi->nom, "Slime");
+            strcpy(ennemi->nom, "Slime de l'Espace");
+            ennemi->symbole = '2';
             ennemi->pvMaximum = (int)(25 * multiplicateur);
             strcpy(ennemi->capacites[0].nom, "Ecrasement");      ennemi->capacites[0].degats = (int)(5  * multiplicateur);
             strcpy(ennemi->capacites[1].nom, "Charge gluante");  ennemi->capacites[1].degats = (int)(7  * multiplicateur);
             strcpy(ennemi->capacites[2].nom, "Explosion acide"); ennemi->capacites[2].degats = (int)(12 * multiplicateur);
             break;
+        case 3:
+            strcpy(ennemi->nom, "Spectre Errant");
+            ennemi->symbole = '3';
+            ennemi->pvMaximum = (int)(30 * multiplicateur);
+            strcpy(ennemi->capacites[0].nom, "Frisson glacial"); ennemi->capacites[0].degats = (int)(10 * multiplicateur);
+            strcpy(ennemi->capacites[1].nom, "Hantise");         ennemi->capacites[1].degats = (int)(12 * multiplicateur);
+            strcpy(ennemi->capacites[2].nom, "Possession");      ennemi->capacites[2].degats = (int)(15 * multiplicateur);
+            break;
+        case 4:
+            strcpy(ennemi->nom, "Chasseur Alien");
+            ennemi->symbole = '4';
+            ennemi->pvMaximum = (int)(45 * multiplicateur);
+            strcpy(ennemi->capacites[0].nom, "Tir laser");       ennemi->capacites[0].degats = (int)(12 * multiplicateur);
+            strcpy(ennemi->capacites[1].nom, "Lame plasma");     ennemi->capacites[1].degats = (int)(14 * multiplicateur);
+            strcpy(ennemi->capacites[2].nom, "Grenade photon");  ennemi->capacites[2].degats = (int)(18 * multiplicateur);
+            break;
         case 100:
-            strcpy(ennemi->nom, "--- ROI SQUELETTE ---");
-            ennemi->pvMaximum = (int)(50 * multiplicateur);
-            strcpy(ennemi->capacites[0].nom, "Tranchant d'os");  ennemi->capacites[0].degats = (int)(10 * multiplicateur);
-            strcpy(ennemi->capacites[1].nom, "Pluie de cranes"); ennemi->capacites[1].degats = (int)(15 * multiplicateur);
-            strcpy(ennemi->capacites[2].nom, "Coup de faux");    ennemi->capacites[2].degats = (int)(20 * multiplicateur);
+            strcpy(ennemi->nom, "--- ENTITE COSMIQUE ---");
+            ennemi->symbole = 'B';
+            ennemi->pvMaximum = (int)(80 * multiplicateur);
+            strcpy(ennemi->capacites[0].nom, "Rayon de vide");   ennemi->capacites[0].degats = (int)(15 * multiplicateur);
+            strcpy(ennemi->capacites[1].nom, "Pluie d'etoiles"); ennemi->capacites[1].degats = (int)(20 * multiplicateur);
+            strcpy(ennemi->capacites[2].nom, "Choc temporel");   ennemi->capacites[2].degats = (int)(25 * multiplicateur);
             break;
         default:
-            strcpy(ennemi->nom, "Inconnu");
+            strcpy(ennemi->nom, "Anomalie");
+            ennemi->symbole = '1';
             ennemi->pvMaximum = 50;
             strcpy(ennemi->capacites[0].nom, "Attaque");  ennemi->capacites[0].degats = 10;
             strcpy(ennemi->capacites[1].nom, "Charge");   ennemi->capacites[1].degats = 8;
@@ -636,9 +657,9 @@ static void initialiser_carte(Carte *carte) {
         Ennemi *ennemi = &carte->ennemis[carte->nombre_ennemis];
         memset(ennemi, 0, sizeof(Ennemi));
         ennemi->position = pos; ennemi->vivant = 1; ennemi->est_boss = 0;
-        int type_ennemi = rand() % 2 + 1;
+        int type_ennemi = rand() % 4 + 1;
         configurer_ennemi(ennemi, type_ennemi, carte->niveau);
-        carte->grille[pos.y][pos.x] = ENNEMI;
+        carte->grille[pos.y][pos.x] = ennemi->symbole;
         carte->nombre_ennemis++;
     }
     /* Boss */
@@ -702,7 +723,7 @@ static void dessiner_cadre_hud(void) {
     "╚══════════════════════════════════════════════════════════╝\n" REINIT);
     printf(GRIS
     " [ZQSD] Deplacer  [X] Quitter"
-    "    @ Joueur  E Ennemi  B Boss  K Cle  ? Objet  S Sortie\n" REINIT);
+    "    \xf0\x9f\xa7\x91 Joueur  \xF0\x9F\x91\xB9\xF0\x9F\x91\xBE\xF0\x9F\x91\xBB\xF0\x9F\x91\xBD Ennemis  \xF0\x9F\x8C\x8C Boss  \xf0\x9f\x94\x91 Cle  \xe2\x9d\x93 Objet  \xf0\x9f\x9a\xaa Sortie\n" REINIT);
     fflush(stdout);
 }
 
@@ -774,12 +795,15 @@ static void dessiner_case(int colonne, int ligne, char c, int sortie_ouverte_par
     aller_position(colonne, ligne);
     switch (c) {
         case MUR:    printf(GRIS "\xe2\x96\x88" REINIT); break;
-        case JOUEUR: printf(VERT "@" REINIT); break;
-        case ENNEMI: printf(ROUGE "E" REINIT); break;
-        case BOSS:   printf(MAGENTA "B" REINIT); break;
-        case CLE:    printf(JAUNE "K" REINIT); break;
-        case SORTIE: printf(sortie_ouverte_param ? CYAN "S" REINIT : BLEU "S" REINIT); break;
-        case MYSTERE:printf(JAUNE "?" REINIT); break;
+        case JOUEUR: printf("\xf0\x9f\xa7\x91"); break; // 🧍
+        case '1':    printf("\xf0\x9f\x91\xb9"); break; // 👹
+        case '2':    printf("\xf0\x9f\x91\xbe"); break; // 👾
+        case '3':    printf("\xf0\x9f\x91\xbb"); break; // 👻
+        case '4':    printf("\xf0\x9f\x91\xbd"); break; // 👽
+        case BOSS:   printf("\xf0\x9f\x8c\x8c"); break; // 🌌
+        case CLE:    printf("\xf0\x9f\x94\x91"); break; // 🔑
+        case SORTIE: printf("\xf0\x9f\x9a\xaa"); break; // 🚪
+        case MYSTERE:printf("\xe2\x9d\x93"); break;     // ❓
         default:     printf(" "); break;
     }
 }
@@ -829,7 +853,7 @@ static void deplacer_ennemis(Carte *carte) {
             directions[0][0] = directions[meilleure_direction][0]; directions[0][1] = directions[meilleure_direction][1];
             directions[meilleure_direction][0] = temp_x; directions[meilleure_direction][1] = temp_y;
         }
-        char symbole = ennemi->est_boss ? BOSS : ENNEMI;
+        char symbole = ennemi->symbole;
         for (int k = 0; k < 4; k++) {
             int nouvelle_x = ennemi->position.x+directions[k][0], nouvelle_y = ennemi->position.y+directions[k][1];
             if (nouvelle_x<=0||nouvelle_x>=carte->colonnes-1||nouvelle_y<=0||nouvelle_y>=carte->lignes-1) continue;
@@ -999,7 +1023,7 @@ static int jouer_niveau(Carte *carte) {
         if (case_destination == MUR) { deverrouiller(&carte->verrou); continue; }
 
         /* Collision directe avec ennemi */
-        if (case_destination == ENNEMI || case_destination == BOSS) {
+        if ((case_destination >= '1' && case_destination <= '4') || case_destination == BOSS) {
             int indice = -1;
             for (int i = 0; i < carte->nombre_ennemis; i++)
                 if (carte->ennemis[i].vivant &&

@@ -80,13 +80,13 @@ html, body {
 /* 3. STRUCTURE DU BIOS POST */
 #cyber-page-body {
   position: fixed; 
-  top: 45px;
+  top: 95px; /* Descendu pour laisser de l'espace sous le header de 85px */
   left: 0;
   right: 0;
   bottom: 0;
   z-index: 2;
   box-sizing: border-box;
-  padding: 10px 40px; 
+  padding: 20px 40px; 
   color: #ffffff; 
   cursor: none !important;
   display: flex;
@@ -97,7 +97,7 @@ html, body {
 
 #terminal-content {
   position: absolute;
-  top: 10px; 
+  top: 0px; 
   left: 40px;
   width: calc(100% - 80px);
   max-width: none; 
@@ -610,7 +610,7 @@ html, body {
   top: 0;
   left: 0;
   width: 100%;
-  height: 105px; /* Augmenté de 20px par rapport à l'original (85px -> 105px) */
+  height: 85px; /* Réduit pour plus d'élégance (était à 105px) */
   background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
