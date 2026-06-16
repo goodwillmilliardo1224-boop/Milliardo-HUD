@@ -9,6 +9,49 @@
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/games/style.css') }}"/>
 <link rel="stylesheet" href="https://cdn.cursors-4u.net/cursors/animated/animated-spinning-kunai-naruto-7a71ef62-32.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.css" />
+<style>
+    #donjon-modal {
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.95);
+        display: none;
+        z-index: 9999;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(15px);
+    }
+    #donjon-terminal-container {
+        width: 90%;
+        max-width: 900px;
+        height: 70%;
+        border: 2px solid #9A0002;
+        box-shadow: 0 0 30px rgba(154, 0, 2, 0.4);
+        background: #000;
+        padding: 10px;
+    }
+    .donjon-controls {
+        margin-top: 25px;
+        display: flex;
+        gap: 20px;
+    }
+    .btn-terminal-ctrl {
+        background: transparent;
+        border: 1px solid #9A0002;
+        color: #EFE6DE;
+        padding: 12px 25px;
+        cursor: pointer;
+        font-family: 'CyberHorizon', sans-serif;
+        font-size: 11px;
+        letter-spacing: 2px;
+        transition: 0.3s;
+    }
+    .btn-terminal-ctrl:hover {
+        background: #9A0002;
+        color: #fff;
+    }
+</style>
 {% endblock %}
 
 {% block background_effects %}
@@ -200,12 +243,27 @@
     </div>
 
 </main>
+
+<!-- MODAL DONJON.C -->
+<div id="donjon-modal">
+    <div style="color: #9A0002; font-family: 'CyberHorizon', sans-serif; margin-bottom: 10px; font-size: 1.2rem;">
+        > INITIALIZING_RPG_CORE: DONJON.EXE_
+    </div>
+    <div id="donjon-terminal-container"></div>
+    <div class="donjon-controls">
+        <button class="btn-terminal-ctrl" onclick="closeDonjon()">TERMINER_LA_SESSION</button>
+        <button class="btn-terminal-ctrl" onclick="restartDonjon()">REBOOT_SYSTEM</button>
+    </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.8.0/lib/xterm-addon-fit.js"></script>
 <script src="{{ url_for('static', filename='js/games/hero-logo-fade.js') }}"></script>
 <script src="{{ url_for('static', filename='js/games/inspirations.js') }}"></script>
 <script src="{{ url_for('static', filename='js/games/main.js') }}"></script>
+<script src="{{ url_for('static', filename='js/cyber/donjon_loader.js') }}"></script>
 <script>
 /* ════════════════════════════════════════
    BASE DE DONNÉES DES PROJETS
@@ -384,13 +442,13 @@ function buildContent(project, bodyEl, tagsEl) {
         if (project.downloadUrl) {
             html += `
                 <div class="panel-action-zone">
-                    <a href="${project.downloadUrl}" class="bouton-valorant btn-download-hud" download>
+                    <button class="bouton-valorant btn-download-hud" onclick="startDonjon()">
                         <span class="bouton-valorant-interieur">
                             <span class="effet-glissement"></span>
-                            <span class="texte-bouton-hud"><i class="fas fa-download"></i> TÉLÉCHARGER (.EXE)</span>
+                            <span class="texte-bouton-hud"><i class="fas fa-terminal"></i> LANCER LA SIMULATION</span>
                         </span>
-                    </a>
-                    <p class="download-note">Note : Lancez-le dans votre terminal pour une expérience optimale.</p>
+                    </button>
+                    <p class="download-note">Note : Exécution sécurisée via module WebAssembly.</p>
                 </div>`;
         }
     } else {
