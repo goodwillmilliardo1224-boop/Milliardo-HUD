@@ -64,10 +64,12 @@ limiter = Limiter(
     storage_uri="memory://",
 )
 
+from groq import Groq
+
 # ── CONFIGURATION IA ──
-AI_API_BASE_URL = os.environ.get("AI_API_BASE_URL", "https://api.groq.com/openai/v1").rstrip("/")
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
 AI_MODEL = os.environ.get("AI_MODEL", "llama-3.3-70b-versatile")
+groq_client = Groq(api_key=GROQ_API_KEY) if GROQ_API_KEY else None
 
 # Mot de passe admin
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "admin1234")
@@ -235,41 +237,28 @@ def detail_projet(domaine):
 @app.route('/chat', methods=['POST'])
 @limiter.limit("5 per minute")
 def chat():
-    if not GROQ_API_KEY:
-        return jsonify({"response": "SYS_ERR: Clé API IA non configurée."})
+    if not groq_client:
+        return jsonify({"response": "SYS_ERR: Client IA non initialisé (vérifiez GROQ_API_KEY)."})
+    
     data = request.json
     user_message = data.get("message", "")
+    
     try:
-        payload = json.dumps({
-            "model": AI_MODEL,
-            "messages": [
+        completion = groq_client.chat.completions.create(
+            model=AI_MODEL,
+            messages=[
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": user_message}
-            ]
-        }).encode("utf-8")
-        api_request = urllib.request.Request(
-            f"{AI_API_BASE_URL}/chat/completions",
-            data=payload,
-            headers={
-                "Authorization": f"Bearer {GROQ_API_KEY}",
-                "Accept": "application/json",
-                "Content-Type": "application/json",
-            },
-            method="POST",
+            ],
+            temperature=0.7,
+            max_tokens=1024,
         )
-        with urllib.request.urlopen(api_request, timeout=30) as response:
-            response_data = json.loads(response.read().decode("utf-8"))
-        ai_message = response_data["choices"][0]["message"]["content"]
+        ai_message = completion.choices[0].message.content
         return jsonify({"response": ai_message})
-    except urllib.error.HTTPError as e:
-        if e.code == 403:
-            return jsonify({"response": "\n\nRoxy — Systèmes neuraux temporairement hors ligne. Contacte Goodwill directement via les liens sociaux ci-dessous. [TRIGGER_HUD_CONTACT]"})
-        elif e.code == 429:
-            return jsonify({"response": "\n\nRoxy — Limite de requêtes atteinte. Patiente quelques instants avant de relancer une commande."})
-        else:
-            return jsonify({"response": f"\n\nRoxy — Anomalie détectée dans le réseau neural (code {e.code}). Réessaie plus tard."})
+        
     except Exception as e:
-        return jsonify({"response": "\n\nRoxy — Connexion interrompue. Les systèmes sont en cours de restauration."})
+        # En cas d'erreur, on affiche le message de l'exception pour le debug
+        return jsonify({"response": f"\n\nRoxy — ERREUR_CRITIQUE : {str(e)}"})
 
 @app.route('/send-contact', methods=['POST'])
 @limiter.limit("3 per hour")

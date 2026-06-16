@@ -1,0 +1,143 @@
+/* ══════════════════════════════════════════
+   UNIFIED TRANSITION SYSTEM (ART, GAMEDEV, CYBER)
+   ══════════════════════════════════════════ */
+
+:root {
+  --cyan: #00F5FF;
+}
+
+/* ── 1. ART TRANSITION (CIRCULAR EXPANSION) ── */
+.art-transition-circle {
+  position: fixed;
+  top: 50%; left: 50%;
+  width: 10px; height: 10px;
+  background: #FB923C;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  z-index: 100000;
+  pointer-events: none;
+  transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+  box-shadow: 0 0 100px rgba(251, 146, 60, 0.5);
+}
+
+.art-transition-circle.active {
+  transform: translate(-50%, -50%) scale(500);
+  pointer-events: all;
+}
+
+/* ── 3. GAMEDEV TRANSITION (SLIDING PANELS) ── */
+.gd-transition-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.gd-panel {
+  position: absolute;
+  left: 0; width: 100%;
+  height: 50vh;
+  background: #1c2020;
+  transition: transform 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+  will-change: transform;
+}
+
+.gd-panel-top {
+  top: 0;
+  transform: translateY(-100%);
+}
+
+.gd-panel-bottom {
+  bottom: 0;
+  transform: translateY(100%);
+}
+
+.gd-loader {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px; height: 50px;
+  display: flex;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: 100001;
+  pointer-events: none;
+}
+
+.gd-loader div {
+  height: 100%;
+  width: 8px;
+  animation: gd-bar-delay 0.8s infinite ease-in-out;
+}
+
+.gd-loader .bar1 { background-color: #754fa0; }
+.gd-loader .bar2 { background-color: #09b7bf; animation-delay: -0.7s; }
+.gd-loader .bar3 { background-color: #90d36b; animation-delay: -0.6s; }
+.gd-loader .bar4 { background-color: #f2d40d; animation-delay: -0.5s; }
+.gd-loader .bar5 { background-color: #fcb12b; animation-delay: -0.4s; }
+.gd-loader .bar6 { background-color: #ed1b72; animation-delay: -0.3s; }
+
+@keyframes gd-bar-delay {
+  0%, 40%, 100% { transform: scaleY(0.05); }
+  20% { transform: scaleY(1.0); }
+}
+
+.gd-transition-active {
+  visibility: visible;
+  pointer-events: all;
+}
+
+.gd-transition-active .gd-panel {
+  transform: translateY(0);
+}
+
+.gd-transition-opening .gd-panel-top {
+  transform: translateY(-100%);
+  transition: transform 0.65s cubic-bezier(0.85, 0, 0.15, 1);
+}
+
+.gd-transition-opening .gd-panel-bottom {
+  transform: translateY(100%);
+  transition: transform 0.65s cubic-bezier(0.85, 0, 0.15, 1);
+}
+
+/* ── 4. CYBER TRANSITION (CRT SCAN) ── */
+#cyber-transition-overlay {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: 1000000; /* Augmenté pour dominer tout */
+  pointer-events: none;
+  display: none;
+  opacity: 0;
+}
+
+.cyber-cover {
+  display: block !important;
+  animation: cyberCoverAnim 0.8s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+}
+
+.cyber-reveal {
+  display: block !important;
+  animation: cyberRevealAnim 0.8s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+}
+
+@keyframes cyberCoverAnim {
+  0%   { transform: scaleY(0.005); opacity: 0; }
+  10%  { transform: scaleY(0.005); opacity: 1; }
+  100% { transform: scaleY(1);     opacity: 1; }
+}
+
+@keyframes cyberRevealAnim {
+  0%   { transform: scaleY(1);     opacity: 1; }
+  90%  { transform: scaleY(0.005); opacity: 1; }
+  100% { transform: scaleY(0.005); opacity: 0; }
+}
+
+/* ── FIX SPECIFICITY (CURSOR) ── */
+/* On s'assure que si une page définit son propre curseur, il gagne sur le cursor:none global */
+html, body {
+  cursor: inherit;
+}

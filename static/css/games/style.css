@@ -502,7 +502,23 @@ body {
     background: linear-gradient(to bottom, transparent, rgba(13,13,15,0.97) 80%);
     pointer-events: none; margin-top: -120px; position: relative; z-index: 2;
 }
-.panel-footer { flex-shrink: 0; padding: 20px 64px 40px; position: relative; z-index: 3; }
+.panel-footer { 
+    flex-shrink: 0; 
+    padding: 20px 64px 40px; 
+    position: relative; 
+    z-index: 3; 
+    display: flex;
+}
+
+/* Si le panneau est à gauche, on pousse le bouton à droite (bord intérieur) */
+.from-left .panel-footer {
+    justify-content: flex-end;
+}
+
+/* Si le panneau est à droite, on pousse le bouton à gauche (bord intérieur) */
+.from-right .panel-footer {
+    justify-content: flex-start;
+}
 
 .panel-eyebrow {
     font-size: 11px; font-weight: 700; text-transform: uppercase;
@@ -578,8 +594,114 @@ body {
 }
 
 /* ══════════════════════════════════════
-   GALERIE INSPIRATIONS
+   SECTION STACK TECHNIQUE
 ══════════════════════════════════════ */
+.section-stack {
+    width: 100%;
+    max-width: 1000px;
+    margin: 60px auto;
+    padding: 0 40px;
+    text-align: center;
+    position: relative;
+    z-index: 5;
+}
+
+.stack-header {
+    margin-bottom: 40px;
+}
+
+.stack-header h2 {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    margin-bottom: 8px;
+}
+
+.stack-header h1 {
+    font-size: clamp(28px, 5vw, 42px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #fff;
+    text-transform: uppercase;
+}
+
+.stack-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 30px;
+}
+
+.stack-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 30px 20px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.stack-item::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(circle, rgba(154, 0, 2, 0.1) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.stack-item:hover {
+    transform: translateY(-10px);
+    border-color: rgba(154, 0, 2, 0.4);
+    background: rgba(154, 0, 2, 0.05);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(154, 0, 2, 0.2);
+}
+
+.stack-item:hover::before {
+    opacity: 1;
+}
+
+.stack-icon {
+    font-size: 40px;
+    color: #9A0002;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 0 10px rgba(154, 0, 2, 0.3));
+    transition: transform 0.4s ease;
+}
+
+.stack-item:hover .stack-icon {
+    transform: scale(1.1);
+    color: #ff0000;
+    filter: drop-shadow(0 0 15px rgba(255, 0, 0, 0.5));
+}
+
+.stack-name {
+    font-family: 'CyberHorizon', sans-serif;
+    font-size: 16px;
+    color: #fff;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+}
+
+.stack-level {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 500;
+}
+
+@media (max-width: 480px) {
+    .stack-grid {
+        grid-template-columns: 1fr;
+    }
+}
 .section-inspirations { width: 100%; max-width: 1200px; margin: 40px auto; padding: 0 40px; }
 
 .inspirations-header { margin-bottom: 32px; }
@@ -665,7 +787,49 @@ body {
 }
 .card-action:hover::before { width: 100%; }
 
-@media (max-width: 480px) {
-    .grid-inspirations { grid-template-columns: 1fr; }
-    .card-content { padding: 20px; transform: translateY(calc(100% - 80px)); }
+/* --- BOUTON TÉLÉCHARGEMENT RPG (STYLE VALORANT) --- */
+.btn-download-hud {
+    text-decoration: none;
+    display: inline-block;
+    width: auto;
+    min-width: 200px;
+}
+
+.btn-download-hud .bouton-valorant-interieur {
+    width: 100%;
+    height: 45px;
+    padding: 0 25px;
+    justify-content: center;
+}
+
+.texte-bouton-hud {
+    position: relative;
+    z-index: 2;
+    font-family: 'CyberHorizon', sans-serif;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    color: #EFE6DE;
+    transition: color 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-download-hud:hover .texte-bouton-hud {
+    color: #9A0002;
+}
+
+.download-note {
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+    margin-top: 15px;
+    font-family: 'Oxanium', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+@media (max-width: 768px) {
+    .btn-download-hud {
+        width: 100%;
+    }
 }
