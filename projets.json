@@ -1,0 +1,29 @@
+[
+  {
+    "id": 1,
+    "titre": "Cyber Sec",
+    "description": "Le numérique, la protection à votre service",
+    "image": "img/cyber.jpg",
+    "domaine": "cyber",
+    "icon": "terminal",
+    "status": "SECURED"
+  },
+  {
+    "id": 2,
+    "titre": "Game Dev",
+    "description": "Entre dans un monde de divertissement",
+    "image": "img/game.jpg",
+    "domaine": "games",
+    "icon": "sports_esports",
+    "status": "ACTIVE"
+  },
+  {
+    "id": 3,
+    "titre": "Art",
+    "description": "contenu en cours de conception",
+    "image": "img/art.jpg",
+    "domaine": "art",
+    "icon": "palette",
+    "status": "INTEGRATED"
+  }
+]

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}{{ projet.titre }} — m!ll!@rd0{% endblock %}
+
+{% block content %}
+<main class="universe-main">
+    <div class="back-link">
+        <a href="/">// Back to Matrix</a>
+    </div>
+    
+    <section class="hero-projet">
+        <h1 class="glitch-title" data-text="{{ projet.titre }}">{{ projet.titre }}</h1>
+        <p class="desc-projet">{{ projet.description }}</p>
+    </section>
+
+    <div class="generic-content">
+        <p>Contenu en cours de conception...</p>
+    </div>
+</main>
+{% endblock %}

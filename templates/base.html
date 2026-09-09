@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}Portfolio{% endblock %}</title>
+  {% block favicon %}{% endblock %}
+
+  <!-- Anti-flash : masque tout immédiatement si une transition Art est en attente -->
+  <script>
+    (function() {
+      if (sessionStorage.getItem('artTransition')) {
+        document.documentElement.style.visibility = 'hidden';
+        window.TRANSITION_ACTIVE = true;
+      } else {
+        window.TRANSITION_ACTIVE = false;
+      }
+    })();
+  </script>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700;800&family=Bebas+Neue&family=Syne+Mono&family=Oxanium:wght@200;300;400;600;700;800&family=Saira:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <!-- Cinzel Decorative -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Finlandica:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+
+  <!-- CSS global -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/transitions.css') }}"/>
+
+  <!-- CSS spécifique à la page (optionnel) -->
+  {% block extra_css %}{% endblock %}
+
+  <style>
+    :root {
+      --admin-bg:       #0a0a0f;
+      --admin-surface:  #13131a;
+      --admin-border:   #1e1e2e;
+      --admin-accent:   #7c6af7;
+      --admin-accent2:  #f97316;
+      --admin-text:     #e8e6f0;
+      --admin-muted:    #6b6880;
+      --success:        #22c55e;
+      --error:          #ef4444;
+      --info:           #3b82f6;
+      --radius:         10px;
+    }
+
+    /* Styles Admin / Flash */
+    .btn {
+      display: inline-flex; align-items: center; gap: .4rem;
+      padding: .5rem 1.1rem; border-radius: var(--radius);
+      font-family: 'Syne', sans-serif; font-size: .85rem; font-weight: 600;
+      cursor: pointer; border: none; transition: all .2s;
+    }
+    .btn-primary  { background: var(--admin-accent);  color: #fff; }
+    .btn-danger   { background: #2a1212; color: var(--error); border: 1px solid #3a1818; }
+    .btn-ghost    { background: transparent; color: var(--admin-muted); border: 1px solid var(--admin-border); }
+    .btn-warning  { background: #2a2010; color: var(--admin-accent2); border: 1px solid #3a2e18; }
+
+    .flash-wrap { position: fixed; top: 1.2rem; right: 1.2rem; z-index: 999999; display: flex; flex-direction: column; gap: .5rem; }
+    .flash {
+      padding: .75rem 1.2rem; border-radius: var(--radius);
+      font-size: .9rem; font-weight: 500; min-width: 260px;
+      animation: slideIn .3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    }
+    .flash.success { background: #0d2618; border: 1px solid #16532d; color: var(--success); }
+    .flash.error   { background: #2a0d0d; border: 1px solid #5a1a1a; color: var(--error); }
+    .flash.info    { background: #0d1a2a; border: 1px solid #1a3a5a; color: var(--info); }
+    @keyframes slideIn { from { transform: translateX(110%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+  </style>
+</head>
+
+<body class="{% block body_class %}{% endblock %}">
+
+  <!-- Flash messages Flask -->
+  <div class="flash-wrap">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for cat, msg in messages %}
+        <div class="flash {{ cat }}">{{ msg }}</div>
+      {% endfor %}
+    {% endwith %}
+  </div>
+
+  <!-- ═══ ART TRANSITION OVERLAY (Cercle) ═══ -->
+  <div id="art-transition-circle"></div>
+
+  <!-- Effets de fond -->
+  {% block background_effects %}
+  <div id="particles-js"></div>
+  <div class="bg-grid"></div>
+  <div class="scanlines"></div>
+  {% endblock %}
+
+  {% block header %}
+  <header id="navbar">
+    <div class="nav-logo nav-glitch" data-text="M!ll!@rd0.">M!ll!<span class="arobase">@</span>rd0<span class="point">.</span></div>
+  </header>
+  {% endblock %}
+
+  <!-- Contenu de la page -->
+  {% block content %}{% endblock %}
+
+  
+
+  <!-- Curseur personnalisé global -->
+  <div id="cur" class="cur"></div>
+
+  <!-- JS global -->
+  {% block background_js %}
+  <script src="{{ url_for('static', filename='js/particles.min.js') }}"></script>
+  <script>
+    particlesJS.load('particles-js', '{{ url_for("static", filename="js/particles-config.json") }}', function() {
+      console.log('particles.js loaded');
+    });
+  </script>
+  {% endblock %}
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+  <script>
+    // Auto-dismiss flash after 4s
+    document.querySelectorAll('.flash').forEach(el => {
+      setTimeout(() => el.style.opacity = '0', 3800);
+      setTimeout(() => el.remove(), 4200);
+    });
+  </script>
+
+  <!-- ═══ PAGE TRANSITION ENGINE ═══ -->
+  <script src="{{ url_for('static', filename='js/transitions.js') }}"></script>
+
+  <!-- JS spécifique à la page (optionnel) -->
+  {% block extra_js %}{% endblock %}
+  <script src="/static/push.js"></script>
+</body>
+</html>

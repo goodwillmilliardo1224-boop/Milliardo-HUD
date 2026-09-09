@@ -1,0 +1,21 @@
+Résumé des doublons supprimés du projet Milliardo Portfolio:
+
+Dans app.py :
+1. Création de la fonction helper `generate_timestamped_filename()`
+   - Remplacement du code duplicate de génération de nom de fichier avec horodatage
+   - Lignes 310 et 375 (originales)
+
+2. Création de la fonction helper `handle_file_upload()`
+   - Remplacement du code duplicate de gestion d'upload de fichiers
+   - Sections admin_project_new() et admin_project_edit()
+
+3. Création de la fonction helper `normalize_domaine()`
+   - Remplacement du code duplicate de normalisation de domaine
+   - Fonction detail_projet()
+
+4. Création de la fonction helper `get_project_from_json()`
+   - Remplacement du code duplicate de recherche de projet dans le JSON de secours
+   - Fonction detail_projet() (blocs else et exception)
+
+Toutes les modifications sont des refactorings qui préservent exactement le même fonctionnement
+tout en éliminant la duplication de code.

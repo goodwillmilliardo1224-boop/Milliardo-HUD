@@ -1,0 +1,303 @@
+/* Art Specific Styles - Immersif */
+@font-face {
+    font-family: 'Road Rage';
+    src: url('/static/fonts/Road_Rage.otf') format('opentype');
+}
+
+body {
+    background: url('/static/img/artfond.jpg') no-repeat center center fixed;
+    background-size: cover;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Désactivation du fond noir par défaut des particules pour laisser voir l'image */
+#particles-js {
+    background: transparent !important;
+}
+
+.ar-universe {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+    padding-top: 21px /* Ajusté de nouveau pour décoller davantage du header */
+}
+
+.ar-title-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 50px;
+}
+
+.art-wrapper {
+    position: relative;
+    width: 600px;
+    height: 300px;
+}
+
+/* Couche 1 : image bleue masquée dans la forme des lettres */
+.art-wrapper .bleu {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+
+    -webkit-mask-image: url('/static/img/titre.png');
+    mask-image: url('/static/img/titre.png');
+    -webkit-mask-mode: luminance;
+    mask-mode: luminance;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+}
+
+/* Couche 2 : ART par-dessus — multiply garde le noir, efface le blanc */
+.art-wrapper .art {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    mix-blend-mode: multiply;
+    filter: contrast(1.8) brightness(0.85);
+}
+
+/* --- Navigation Button --- */
+.btn-pinceau-home {
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    z-index: 1001;
+    font-family: 'Road Rage', cursive, sans-serif;
+    font-size: 18px;
+    letter-spacing: 2px;
+    text-decoration: none;
+    cursor: pointer;
+    display: inline-block;
+    padding: 8px 20px;
+    border-radius: 3px 14px 5px 18px / 18px 5px 14px 3px;
+
+    background: transparent;
+    color: #111111;
+    border: 2px solid #111111;
+    box-shadow: 2px 2px 0px rgba(17,17,17,0.25);
+
+    transition:
+        transform     0.18s ease,
+        border-radius 0.25s ease,
+        box-shadow    0.18s ease,
+        background    0.18s ease,
+        color         0.18s ease;
+}
+
+.btn-pinceau-home:hover {
+    background: #111111;
+    color: #ffffff;
+    border-radius: 14px 3px 18px 5px / 5px 18px 3px 14px;
+    transform: translateY(-50%) translate(-2px, -2px) rotate(-0.8deg);
+    box-shadow:
+        5px 5px 0px #111111,
+        9px 9px 0px rgba(17,17,17,0.12);
+}
+
+.btn-pinceau-home:active {
+    transform: translateY(-50%) translate(2px, 2px) rotate(0.4deg);
+    box-shadow: 1px 1px 0px #111111;
+}
+
+/* --- Social Buttons Style Pinceau --- */
+.social-container {
+  position: fixed;
+  bottom: 40px;
+  left: 70px;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  z-index: 1001;
+}
+
+.btn-social-pinceau {
+  position: relative;
+  cursor: pointer;
+  text-decoration: none;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 21px;
+  color: #111111;
+  background: transparent;
+  border: none;
+  transition:
+    transform  0.18s ease,
+    color      0.18s ease;
+}
+
+/* Icône nette au-dessus */
+.btn-social-pinceau i {
+  position: relative;
+  z-index: 2;
+  transition: color 0.18s ease;
+}
+
+.btn-social-pinceau:hover {
+  transform: translate(-2px, -2px) rotate(-0.8deg);
+  color: #ffffff;
+}
+
+.btn-social-pinceau:active {
+  transform: translate(2px, 2px) rotate(0.4deg);
+}
+
+.nav-logo {
+    color: #111111 !important;
+}
+
+#navbar {
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+}
+
+.nav-logo .arobase {
+    color: var(--cyan) !important;
+    font-family: inherit; /* Garde la police du logo global */
+}
+
+.rr-letter {
+    font-family: 'Road Rage', cursive !important;
+    font-size: 1.2em;
+    color: #111111;
+}
+
+/* --- Advanced Typewriter Section --- */
+.box-texte {
+    text-align: center;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.phrase-pinceau {
+    font-family: 'Road Rage', cursive, sans-serif; 
+    font-size: 30px;
+    text-transform: none; /* Force le respect de la casse du JS */
+    color: #111111; 
+    letter-spacing: -2px; 
+    word-spacing: 12px;
+    display: inline-block;
+    white-space: normal; /* Permet le retour à la ligne automatique */
+    max-width: 90%;      /* Empêche de coller aux bords sur mobile */
+    position: relative;
+    word-break: keep-all; /* Évite de couper les mots en plein milieu */
+    overflow-wrap: break-word; /* Gère les mots trop longs si nécessaire */
+}
+
+/* Curseur clignotant après le texte */
+.phrase-pinceau::after {
+    content: '|';
+    display: inline-block;
+    color: #111111;
+    opacity: 1;
+    animation: blink 0.65s steps(1) infinite;
+    margin-left: 2px;
+}
+
+/* Curseur masqué quand l'écriture est terminée */
+.phrase-pinceau.done::after {
+    animation: blink-out 0.5s forwards;
+}
+
+/* Lettre fraîchement tapée — brève illumination */
+.lettre-flash {
+    display: inline-block;
+    color: #555555;
+    animation: flash-letter 0.4s ease forwards;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+}
+
+@keyframes blink-out {
+    0%   { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+@keyframes flash-letter {
+    0%   { color: #888888; }
+    100% { color: #111111; }
+}
+
+/* ══════════════════════════════════════════
+   CUSTOM BRUSH CURSOR (Art Page Only)
+══════════════════════════════════════════ */
+/* Masquer le curseur système ET le curseur global du portfolio */
+* { cursor: none !important; }
+.cur { display: none !important; }
+
+#pinceau {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 106px;
+    height: 106px;
+    pointer-events: none;
+    z-index: 9999;
+    will-change: transform;
+    transform: translate3d(-400px, -400px, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
+
+#pinceau img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    pointer-events: none;
+    will-change: transform;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+}
+
+/* Particules au clic */
+.particule {
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    background: #111111; /* Couleur assortie au thème Art */
+    animation: particule-fade 0.55s ease forwards;
+}
+
+@keyframes particule-fade {
+    0% {
+        transform: scale(1);
+        opacity: 0.75;
+    }
+    100% {
+        transform: scale(0.1) translate(var(--tx), var(--ty));
+        opacity: 0;
+    }
+}
+
+/* --- RESPONSIVE DOCK --- */
+@media (max-width: 768px) {
+    .social-container {
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: 30px;
+    }
+}
+

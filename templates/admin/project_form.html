@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+{% block title %}Admin — {{ action }} un projet{% endblock %}
+
+{% block extra_style %}
+<style>
+  .layout { display: flex; min-height: 100vh; }
+  .sidebar {
+    width: 220px; flex-shrink: 0;
+    background: var(--surface); border-right: 1px solid var(--border);
+    padding: 1.5rem 1rem; display: flex; flex-direction: column; gap: .3rem;
+    position: sticky; top: 0; height: 100vh;
+  }
+  .sidebar-brand { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; color: var(--accent); padding: .5rem .75rem 1.2rem; letter-spacing: -.5px; }
+  .sidebar a { display: flex; align-items: center; gap: .6rem; padding: .6rem .75rem; border-radius: 8px; color: var(--muted); font-size: .9rem; font-weight: 500; transition: all .2s; }
+  .sidebar a:hover { background: rgba(124,106,247,.12); color: var(--accent); }
+  .sidebar-spacer { flex: 1; }
+
+  .main {
+    flex: 1;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centrage horizontal */
+  }
+  .page-header, .form-card {
+    width: 100%;
+    max-width: 900px; /* Largeur maximale pour le formulaire */
+  }
+  .page-header { margin-bottom: 2rem; }
+  .page-title { font-size: 1.6rem; font-weight: 800; }
+  .page-sub { color: var(--muted); font-size: .9rem; margin-top: .3rem; }
+
+  .form-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+  .form-full { grid-column: 1 / -1; }
+
+  .field { display: flex; flex-direction: column; gap: .4rem; }
+  .field label { font-size: .78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+  .field input, .field textarea, .field select {
+    padding: .75rem 1rem;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: var(--radius); color: var(--text);
+    font-family: 'Epilogue', sans-serif; font-size: .95rem;
+    transition: border-color .2s;
+  }
+  .field input:focus, .field textarea:focus, .field select:focus { outline: none; border-color: var(--accent); }
+  .field textarea { resize: vertical; min-height: 100px; }
+  .field-hint { font-size: .78rem; color: var(--muted); margin-top: .2rem; }
+
+  .checkbox-field { flex-direction: row; align-items: center; gap: .6rem; margin-top: .5rem; }
+  .checkbox-field input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer; }
+  .checkbox-field label { text-transform: none; letter-spacing: 0; font-size: .9rem; color: var(--text); cursor: pointer; }
+
+  .form-actions { display: flex; gap: .75rem; margin-top: 1.5rem; }
+  .preview-img { margin-top: .5rem; border-radius: 8px; max-height: 120px; display: none; border: 1px solid var(--border); }
+  .section-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: .85rem; color: var(--accent); text-transform: uppercase; letter-spacing: .1em; margin: 1.5rem 0 .8rem; padding-bottom: .4rem; border-bottom: 1px solid var(--border); grid-column: 1 / -1; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="layout">
+  <nav class="sidebar">
+    <div class="sidebar-brand">⚡ Portfolio</div>
+    <a href="{{ url_for('admin_dashboard') }}">📁 Projets</a>
+    <a href="{{ url_for('admin_project_new') }}">➕ Nouveau projet</a>
+    <a href="{{ url_for('index') }}" target="_blank">🌐 Voir le site</a>
+    <div class="sidebar-spacer"></div>
+    <a href="{{ url_for('admin_logout') }}" style="color:var(--error)">🚪 Déconnexion</a>
+  </nav>
+
+  <main class="main">
+    <div class="page-header">
+      <h1 class="page-title">{{ action }} un projet</h1>
+      <p class="page-sub">{% if project %}Modification de « {{ project.title }} »{% else %}Remplis les champs ci-dessous{% endif %}</p>
+    </div>
+
+    <div class="form-card">
+      <form method="POST" enctype="multipart/form-data">
+        <div class="form-grid">
+
+          <!-- Infos principales -->
+          <div class="section-title">📋 Informations principales</div>
+
+          <div class="field form-full">
+            <label>Titre du projet *</label>
+            <input type="text" name="title" required placeholder="Ex: Mon super projet"
+                   value="{{ project.title if project else '' }}" />
+          </div>
+
+          <div class="field form-full">
+            <label>Description *</label>
+            <textarea name="description" required placeholder="Décris le projet, ce qu'il fait, tes apprentissages...">{{ project.description if project else '' }}</textarea>
+          </div>
+
+          <div class="field">
+            <label>Moule d'affichage (Catégorie)</label>
+            <select name="category" required>
+              <option value="">— Choisir un monde —</option>
+              {% for cat_id, cat_label in [('art', '🎨 ART Univers'), ('cybersec', '🛡️ CYBERSEC Terminal'), ('gamedev', '🎮 GAMEDEV Arcade')] %}
+                <option value="{{ cat_id }}" {% if project and project.category == cat_id %}selected{% endif %}>{{ cat_label }}</option>
+              {% endfor %}
+            </select>
+            <span class="field-hint">Détermine le template utilisé pour l'affichage</span>
+          </div>
+
+          <div class="field">
+            <label>Technologies</label>
+            <input type="text" name="tech_stack" placeholder="Python, Flask, SQLite, JS"
+                   value="{{ project.tech_stack if project else '' }}" />
+            <span class="field-hint">Sépare chaque techno par une virgule</span>
+          </div>
+
+          <!-- Liens -->
+          <div class="section-title">🔗 Liens</div>
+
+          <div class="field">
+            <label>URL GitHub</label>
+            <input type="url" name="github_url" placeholder="https://github.com/toi/projet"
+                   value="{{ project.github_url if project else '' }}" />
+          </div>
+
+          <div class="field">
+            <label>URL du site live</label>
+            <input type="url" name="live_url" placeholder="https://monprojet.com"
+                   value="{{ project.live_url if project else '' }}" />
+          </div>
+
+          <!-- Image -->
+          <div class="section-title">🖼️ Image</div>
+
+          <div class="field form-full">
+            <label>Image de couverture (Fichier local)</label>
+            <input type="file" name="image_file" id="imageFile" accept="image/*"
+                   onchange="previewLocalImage(this)" />
+            
+            {% if project and project.image_url %}
+            <div style="margin-top: 10px;">
+                <p style="font-size: 0.8rem; color: var(--muted); margin-bottom: 5px;">Image actuelle :</p>
+                <img id="imgPreview" class="preview-img" style="display: block;"
+                     src="{{ url_for('static', filename='uploads/' + project.image_url) }}"
+                     alt="Aperçu" />
+            </div>
+            {% else %}
+            <img id="imgPreview" class="preview-img" alt="Aperçu" />
+            {% endif %}
+            <span class="field-hint">Formats acceptés : PNG, JPG, JPEG, GIF</span>
+          </div>
+
+          <!-- Options -->
+          <div class="section-title">⭐ Options</div>
+
+          <div class="field checkbox-field form-full">
+            <input type="checkbox" name="featured" id="featured"
+                   {% if project and project.featured %}checked{% endif %} />
+            <label for="featured">Mettre ce projet en vedette (affiché en priorité sur le portfolio)</label>
+          </div>
+
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">
+            {% if project %}✅ Enregistrer les modifications{% else %}➕ Ajouter le projet{% endif %}
+          </button>
+          <a href="{{ url_for('admin_dashboard') }}" class="btn btn-ghost">Annuler</a>
+        </div>
+      </form>
+    </div>
+  </main>
+</div>
+{% endblock %}
+
+{% block extra_script %}
+<script>
+  function previewLocalImage(input) {
+    const img = document.getElementById('imgPreview');
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        img.src = e.target.result;
+        img.style.display = 'block';
+      }
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+</script>
+{% endblock %}
