@@ -1,8 +1,8 @@
-{% extends "base.html" %}
+﻿{% extends "base.html" %}
 
-{% block title %}Art — m!ll!@rd0{% endblock %}
-{% block og_title %}Goodwill — Univers Art{% endblock %}
-{% block og_description %}L'univers artistique de Goodwill : design, illustrations et créations visuelles.{% endblock %}
+{% block title %}Art â€” m!ll!@rd0{% endblock %}
+{% block og_title %}Goodwill â€” Univers Art{% endblock %}
+{% block og_description %}L'univers artistique de Goodwill : design, illustrations et crÃ©ations visuelles.{% endblock %}
 
 {% block body_class %}universe-art{% endblock %}
 
@@ -18,7 +18,7 @@
     transition: all 0.18s ease;
   }
 
-  /* ── Galerie Art dynamique ── */
+  /* â”€â”€ Galerie Art dynamique â”€â”€ */
   .ar-gallery {
     display: flex;
     flex-wrap: wrap;
@@ -104,7 +104,7 @@
     border: 2.5px solid #111111;
     border-radius: 3px 14px 5px 18px / 18px 5px 14px 3px;
     box-shadow: 2px 2px 0px rgba(17,17,17,0.22);
-    filter: url(#pinceau-filter);  /* ✅ fonctionne car SVG est dans le même document */
+    filter: url(#pinceau-filter);  /* âœ… fonctionne car SVG est dans le mÃªme document */
     background: transparent;
     transition:
       border-radius 0.25s ease,
@@ -124,7 +124,7 @@
   .btn-social-pinceau:active::before {
     box-shadow: 1px 1px 0px #111111;
   }
-</style>
+.ar-title-container { margin-top: 100px; }</style>
 {% endblock %}
 
 {% block header %}
@@ -151,7 +151,7 @@
     </defs>
 </svg>
 
-<!-- Curseur personnalisé (Art Page Only) -->
+<!-- Curseur personnalisÃ© (Art Page Only) -->
 <div id="pinceau">
     <img id="img-pinceau" src="{{ url_for('static', filename='img/pin.png') }}" alt="" draggable="false" role="presentation">
 </div>
@@ -159,13 +159,13 @@
 <main class="ar-universe">
     <div class="ar-title-container">
         <div class="art-wrapper">
-            <img class="bleu" src="{{ url_for('static', filename='img/bleu.jpg') }}" alt="Fond bleu univers Art — Milliardo">
-            <img class="art"  src="{{ url_for('static', filename='img/titre.png') }}" alt="Milliardo Art — titre de l'univers artistique">
+            <img class="bleu" src="{{ url_for('static', filename='img/bleu.jpg') }}" alt="Fond bleu univers Art â€” Milliardo">
+            <img class="art"  src="{{ url_for('static', filename='img/titre.png') }}" alt="Milliardo Art â€” titre de l'univers artistique">
         </div>
     </div>
 
     <div class="box-texte">
-        <h1 class="phrase-pinceau" id="typewriter"></h1>
+        <h1 class="phrase-pinceau" id="typewriter">Contenu en cours de déploiement</h1>
     </div>
 
     <!-- Galerie projets dynamique -->
@@ -206,7 +206,7 @@
         }
     });
 
-    // Galerie dynamique — projets Art depuis Supabase
+    // Galerie dynamique â€” projets Art depuis Supabase
     async function loadArtProjects() {
         try {
             const res  = await fetch('/api/projects/art');
@@ -221,11 +221,11 @@
 
                 const imgHtml = p.image_url
                     ? `<img class="ar-card-img" src="/static/uploads/${p.image_url}" alt="${p.title}" />`
-                    : `<div class="ar-card-img-placeholder">🎨</div>`;
+                    : `<div class="ar-card-img-placeholder">ðŸŽ¨</div>`;
 
                 const linkHtml = p.live_url
-                    ? `<a href="${p.live_url}" target="_blank" style="font-size:0.75rem;color:#9A0002;text-decoration:none;display:block;margin-top:0.5rem;">→ Voir le projet</a>`
-                    : (p.github_url ? `<a href="${p.github_url}" target="_blank" style="font-size:0.75rem;color:#9A0002;text-decoration:none;display:block;margin-top:0.5rem;">→ GitHub</a>` : '');
+                    ? `<a href="${p.live_url}" target="_blank" style="font-size:0.75rem;color:#9A0002;text-decoration:none;display:block;margin-top:0.5rem;">â†’ Voir le projet</a>`
+                    : (p.github_url ? `<a href="${p.github_url}" target="_blank" style="font-size:0.75rem;color:#9A0002;text-decoration:none;display:block;margin-top:0.5rem;">â†’ GitHub</a>` : '');
 
                 card.innerHTML = `
                     ${imgHtml}
