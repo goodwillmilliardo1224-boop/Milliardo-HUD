@@ -1,8 +1,5 @@
 import json
 import os
-import sys
-import urllib.error
-import urllib.request
 from datetime import datetime
 from functools import wraps
 
@@ -14,18 +11,9 @@ from flask_mail import Mail, Message
 from pywebpush import webpush, WebPushException
 from supabase import create_client, Client
 from werkzeug.utils import secure_filename
-from datetime import datetime
 
 # Chargement des variables d'environnement depuis .env
 load_dotenv()
-
-
-def generate_timestamped_filename(original_filename):
-    """Génère un nom de fichier avec horodatage pour éviter les conflits"""
-    if not original_filename:
-        return None
-    secure_name = secure_filename(original_filename)
-    return f"{datetime.now().strftime('%Y%m%d%H%M%S')}_{secure_name}"
 
 
 def generate_timestamped_filename(original_filename):
@@ -55,12 +43,12 @@ def handle_file_upload(file, old_filename=None):
 
 
 def normalize_domaine(domaine):
-    """Normalise le domaine pour la correspondance"""
+    """Normalise le domaine vers la valeur stockée en base Supabase"""
     domaine_lower = domaine.lower()
-    if domaine_lower == 'cybersec':
-        return 'cyber'
-    if domaine_lower == 'gamedev':
-        return 'games'
+    if domaine_lower == 'cyber':
+        return 'cybersec'
+    if domaine_lower == 'games':
+        return 'gamedev'
     return domaine_lower
 
 
@@ -70,7 +58,9 @@ def get_project_from_json(domaine, search_domaine):
     return next((p for p in projets_json if p.get('domaine') == search_domaine or p.get('domaine') == domaine), None)
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY", "change-this-in-production-please")
+app.secret_key = os.environ.get("SECRET_KEY")
+if not app.secret_key:
+    raise ValueError("❌ SECRET_KEY doit être défini dans .env")
 
 # ── FILTRE OPTIMISATION D'IMAGE ──
 from image_optimizer import get_optimized_image
@@ -82,6 +72,11 @@ def optimize_filter(filename):
 UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+# Création du dossier uniquement en local (Vercel = filesystem read-only)
+try:
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+except OSError:
+    pass
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -122,8 +117,11 @@ GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
 AI_MODEL = os.environ.get("AI_MODEL", "llama-3.3-70b-versatile")
 groq_client = Groq(api_key=GROQ_API_KEY) if GROQ_API_KEY else None
 
-# Mot de passe admin
-ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "admin1234")
+# Identifiants admin
+ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME")
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD")
+if not ADMIN_USERNAME or not ADMIN_PASSWORD:
+    raise ValueError("❌ ADMIN_USERNAME et ADMIN_PASSWORD doivent être définis dans .env")
 
 # ── CLASSE PROJET (pour compatibilité) ──
 class Project:
@@ -224,6 +222,46 @@ def get_projects():
 
 # ── ROUTES PUBLIQUES ──
 
+# ── ROUTE API PROJETS (JSON) ──
+@app.route('/api/projects/<categorie>')
+def api_projects(categorie):
+    """Retourne les projets d'une catégorie en JSON pour les pages univers."""
+    # Mapping des alias
+    cat_map = {
+        'games':    'gamedev',
+        'gamedev':  'gamedev',
+        'cyber':    'cybersec',
+        'cybersec': 'cybersec',
+        'art':      'art',
+    }
+    cat = cat_map.get(categorie.lower())
+    if not cat:
+        return jsonify([])
+    try:
+        response = supabase.table('projects') \
+            .select("*") \
+            .eq('category', cat) \
+            .order('created_at', desc=True) \
+            .execute()
+        projects = []
+        for p in response.data:
+            projects.append({
+                'id':          p.get('id'),
+                'title':       p.get('title', ''),
+                'description': p.get('description', ''),
+                'tech_stack':  p.get('tech_stack', ''),
+                'github_url':  p.get('github_url', ''),
+                'live_url':    p.get('live_url', ''),
+                'trailer_url': p.get('trailer_url', ''),
+                'image_url':   p.get('image_url', ''),
+                'featured':    p.get('featured', False),
+                'category':    p.get('category', ''),
+            })
+        return jsonify(projects)
+    except Exception as e:
+        print(f"⚠️ API projects error: {e}")
+        return jsonify([])
+
 @app.route('/')
 def index():
     db_projects = get_projects()
@@ -235,49 +273,54 @@ def index():
     featured = [p for p in db_projects if p.featured]
     return render_template('index.html', projets=projets, featured=featured, projects=db_projects)
 
+# ── REDIRECTIONS 301 — URLs canoniques ──
+@app.route('/projet/cyber')
+def redirect_cyber():
+    return redirect(url_for('detail_projet', domaine='cybersec'), 301)
+
+@app.route('/projet/games')
+def redirect_games():
+    return redirect(url_for('detail_projet', domaine='gamedev'), 301)
+
 @app.route('/projet/<domaine>')
 def detail_projet(domaine):
     templates_map = {
         'cybersec': 'cyber.html',
-        'cyber': 'cyber.html',
-        'gamedev': 'games.html',
-        'games': 'games.html',
-        'art': 'art.html'
+        'cyber':    'cyber.html',
+        'gamedev':  'games.html',
+        'games':    'games.html',
+        'art':      'art.html'
     }
 
-    search_domaine = normalize_domaine(domaine)
-    
+    # Normalise vers la valeur en base (cyber→cybersec, games→gamedev)
+    cat = normalize_domaine(domaine)
+
+    projet = None
     try:
-        response = supabase.table('projects').select("*").eq('category', domaine).execute()
+        # Une seule requête : cherche par category (valeur normalisée ou originale)
+        response = supabase.table('projects').select("*") \
+            .or_(f"category.eq.{cat},category.eq.{domaine}") \
+            .limit(1).execute()
         if response.data:
             projet = Project(**response.data[0])
-        else:
-            response = supabase.table('projects').select("*").eq('category', search_domaine).execute()
-            if response.data:
-                projet = Project(**response.data[0])
-            else:
-                response = supabase.table('projects').select("*").eq('title', domaine).execute()
-                if response.data:
-                    projet = Project(**response.data[0])
-                else:
-                    projet = get_project_from_json(domaine, search_domaine)
     except Exception as e:
         print(f"⚠️ Erreur Supabase: {e}")
-        projet = get_project_from_json(domaine, search_domaine)
-    
+
+    # Fallback JSON si rien en base
+    if not projet:
+        projet = get_project_from_json(domaine, cat)
+
     if not projet:
         print(f"❌ [DEBUG] Projet non trouvé pour domaine='{domaine}'")
         abort(404)
-    
-    print(f"✅ [DEBUG] Projet trouvé : {projet}")
-    
+
     if isinstance(projet, dict):
         if 'titre' in projet and not projet.get('title'):
             projet['title'] = projet['titre']
         if not projet.get('description'):
             projet['description'] = "Description non disponible"
-    
-    template_name = templates_map.get(domaine, 'projet_detail.html')
+
+    template_name = templates_map.get(domaine, templates_map.get(cat, 'projet_detail.html'))
     print(f"📂 [DEBUG] Chargement du template : {template_name}")
     return render_template(template_name, projet=projet)
 
@@ -340,11 +383,13 @@ def admin_login():
     if session.get("admin_logged_in"):
         return redirect(url_for("admin_dashboard"))
     if request.method == "POST":
-        if request.form.get("password") == ADMIN_PASSWORD:
+        username = request.form.get("username", "")
+        password = request.form.get("password", "")
+        if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
             session["admin_logged_in"] = True
             flash("Connexion réussie !", "success")
             return redirect(url_for("admin_dashboard"))
-        flash("Mot de passe incorrect.", "error")
+        flash("Identifiants incorrects.", "error")
     return render_template("admin/login.html")
 
 @app.route("/admin/logout")
@@ -526,6 +571,42 @@ def admin_notify():
     body = data.get("body", "Viens voir mon dernier projet.")
     send_push_to_all(title, body)
     return jsonify({"status": "ok"})
+
+# ── SEO : SITEMAP + ROBOTS ──
+
+@app.route('/sitemap.xml')
+def sitemap():
+    from flask import Response
+    base = "https://milliardo.vercel.app"
+    pages = [
+        {"loc": f"{base}/",                  "priority": "1.0", "changefreq": "weekly"},
+        {"loc": f"{base}/projet/cybersec",   "priority": "0.9", "changefreq": "monthly"},
+        {"loc": f"{base}/projet/gamedev",    "priority": "0.9", "changefreq": "monthly"},
+        {"loc": f"{base}/projet/art",        "priority": "0.9", "changefreq": "monthly"},
+    ]
+    xml = '<?xml version="1.0" encoding="UTF-8"?>\n'
+    xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+    for p in pages:
+        xml += f"""  <url>
+    <loc>{p["loc"]}</loc>
+    <changefreq>{p["changefreq"]}</changefreq>
+    <priority>{p["priority"]}</priority>
+  </url>\n"""
+    xml += '</urlset>'
+    return Response(xml, mimetype='application/xml')
+
+@app.route('/robots.txt')
+def robots():
+    from flask import Response
+    content = """User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /admin/*
+
+Sitemap: https://milliardo.vercel.app/sitemap.xml
+"""
+    return Response(content, mimetype='text/plain')
 
 if __name__ == "__main__":
     print("✅ App initialisée avec Supabase SDK.")
