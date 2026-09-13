@@ -3,8 +3,53 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>{% block title %}Portfolio{% endblock %}</title>
+  <title>{% block title %}Milliardo HUD — Portfolio de Goodwill{% endblock %}</title>
   {% block favicon %}{% endblock %}
+
+  <!-- ═══ SEO ═══ -->
+  <meta name="description" content="Portfolio interactif de Goodwill — Étudiant en Cybersécurité à l'HECM, développeur bas niveau, game designer 2D et artiste. Interface HUD immersive inspirée des terminaux Linux."/>
+  <meta name="keywords" content="Goodwill, Milliardo, portfolio, cybersécurité, game dev, Unity, Python, Flask, développeur, Bénin, HECM, Red Team, Pentest"/>
+  <meta name="author" content="DJOGBENOU Serflorel Goodwill"/>
+  <meta name="robots" content="index, follow"/>
+  <link rel="canonical" href="https://milliardo.vercel.app/"/>
+
+  <!-- ═══ OPEN GRAPH (Facebook, LinkedIn, Discord) ═══ -->
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://milliardo.vercel.app/"/>
+  <meta property="og:title" content="{% block og_title %}Milliardo HUD — Portfolio de Goodwill{% endblock %}"/>
+  <meta property="og:description" content="{% block og_description %}Portfolio interactif de Goodwill — Cybersécurité, Game Dev, Art. Interface HUD immersive.{% endblock %}"/>
+  <meta property="og:image" content="https://milliardo.vercel.app/static/img/titre.webp"/>
+  <meta property="og:locale" content="fr_FR"/>
+  <meta property="og:site_name" content="Milliardo HUD"/>
+
+  <!-- ═══ TWITTER CARD ═══ -->
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="{% block tw_title %}Milliardo HUD — Portfolio de Goodwill{% endblock %}"/>
+  <meta name="twitter:description" content="Portfolio interactif — Cybersécurité, Game Dev, Art."/>
+  <meta name="twitter:image" content="https://milliardo.vercel.app/static/img/titre.webp"/>
+
+  <!-- ═══ SCHEMA.ORG (Google Rich Results) ═══ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "DJOGBENOU Serflorel Goodwill",
+    "alternateName": "Goodwill Milliardo",
+    "url": "https://milliardo.vercel.app",
+    "image": "https://milliardo.vercel.app/static/img/moi.webp",
+    "jobTitle": "Étudiant en Cybersécurité & Développeur",
+    "worksFor": {
+      "@type": "Organization",
+      "name": "HECM"
+    },
+    "knowsAbout": ["Cybersécurité", "Python", "C", "C#", "Unity", "Game Design", "Flask", "Supabase"],
+    "sameAs": [
+      "https://github.com/goodwillmilliardo1224-boop"
+    ],
+    "email": "goodwillmilliardo1224@gmail.com",
+    "nationality": "Béninois"
+  }
+  </script>
 
   <!-- Anti-flash : masque tout immédiatement si une transition Art est en attente -->
   <script>
@@ -134,6 +179,8 @@
 
   <!-- JS spécifique à la page (optionnel) -->
   {% block extra_js %}{% endblock %}
+  {% block push_js %}
   <script src="/static/push.js"></script>
+  {% endblock %}
 </body>
 </html>

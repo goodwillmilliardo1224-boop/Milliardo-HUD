@@ -1,97 +1,189 @@
 {% extends "base.html" %}
 {% block title %}Admin — Dashboard{% endblock %}
+{% block push_js %}{% endblock %}
 
-{% block extra_style %}
+{% block extra_css %}
 <style>
-  .layout { display: flex; min-height: 100vh; }
+  .layout {
+    display: flex;
+    min-height: 100vh;
+    padding-top: var(--nav-height, 80px);
+  }
 
-  /* Sidebar */
+  /* Police globale */
+  .layout * {
+    font-family: 'Bebas Neue', 'Oxanium', sans-serif;
+    letter-spacing: 0.08em;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #ffffff;
+  }
+  .project-desc, td, .stat-label {
+    font-family: 'Oxanium', sans-serif;
+    letter-spacing: normal;
+    font-size: 0.92rem;
+    font-weight: 500;
+    color: #ffffff;
+  }
+
+  /* ── SIDEBAR DRAWER ── */
   .sidebar {
-    width: 220px; flex-shrink: 0;
-    background: var(--surface); border-right: 1px solid var(--border);
-    padding: 1.5rem 1rem; display: flex; flex-direction: column; gap: .3rem;
-    position: sticky; top: 0; height: 100vh;
+    position: fixed;
+    top: var(--nav-height, 80px);
+    left: 0;
+    height: calc(100vh - var(--nav-height, 80px));
+    width: 220px;
+    background: var(--admin-surface);
+    border-right: 1px solid var(--admin-border);
+    padding: 1.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: .3rem;
+    z-index: 200;
+
+    /* Animation slide */
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  .sidebar-brand {
-    font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800;
-    color: var(--accent); padding: .5rem .75rem 1.2rem; letter-spacing: -.5px;
+
+  .sidebar.open {
+    transform: translateX(0);
   }
+
   .sidebar a {
     display: flex; align-items: center; gap: .6rem;
     padding: .6rem .75rem; border-radius: 8px;
-    color: var(--muted); font-size: .9rem; font-weight: 500;
-    transition: all .2s;
+    color: var(--admin-muted); font-weight: 500;
+    transition: all .2s; text-decoration: none;
   }
-  .sidebar a:hover, .sidebar a.active { background: rgba(124,106,247,.12); color: var(--accent); }
+  .sidebar a:hover, .sidebar a.active {
+    background: rgba(124,106,247,.12);
+    color: var(--admin-accent);
+  }
   .sidebar-spacer { flex: 1; }
 
-  /* Main */
-  .main {
-    flex: 1;
-    padding: 2rem;
+  /* Overlay sombre quand sidebar ouverte */
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 199;
+  }
+  .sidebar-overlay.open { display: block; }
+
+  /* ── BOUTON TOGGLE ── */
+  .sidebar-toggle {
+    position: fixed;
+    top: calc(var(--nav-height, 80px) + 1rem);
+    left: 1rem;
+    z-index: 201;
+    width: 40px;
+    height: 40px;
+    background: var(--admin-surface);
+    border: 1px solid var(--admin-border);
+    border-radius: 8px;
     display: flex;
     flex-direction: column;
-    align-items: center; /* Centrage horizontal */
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    cursor: pointer;
+    transition: background 0.2s;
   }
-  .page-header, .stats-bar, .card {
-    width: 100%;
-    max-width: 1100px; /* Largeur maximale pour le contenu */
+
+  .sidebar-toggle:hover { background: rgba(124,106,247,.12); }
+
+  .sidebar-toggle span {
+    display: block;
+    width: 18px;
+    height: 2px;
+    background: var(--admin-text);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    font-size: 0;
+    letter-spacing: 0;
   }
+
+  /* Animation hamburger → croix */
+  .sidebar-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .sidebar-toggle.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  .sidebar-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  /* ── MAIN (pleine largeur) ── */
+  .main {
+    flex: 1;
+    padding: 2rem 2rem 2rem 5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .page-header, .stats-bar, .card { width: 100%; max-width: 1100px; }
   .page-header {
     display: flex; align-items: center; justify-content: space-between;
     margin-bottom: 2rem;
   }
-  .page-title { font-size: 1.6rem; font-weight: 800; }
-  .stats-bar {
-    display: flex; gap: 1rem; margin-bottom: 2rem;
-  }
+  .page-title { font-size: 1.6rem; font-weight: 800; color: var(--admin-text); }
+
+  /* Stats */
+  .stats-bar { display: flex; gap: 1rem; margin-bottom: 2rem; }
   .stat {
-    background: var(--surface); border: 1px solid var(--border);
+    background: var(--admin-surface); border: 1px solid var(--admin-border);
     border-radius: var(--radius); padding: 1rem 1.5rem; flex: 1;
   }
-  .stat-val { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; color: var(--accent); }
-  .stat-label { font-size: .8rem; color: var(--muted); margin-top: .2rem; }
+  .stat-val { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--admin-accent); font-weight: 700; letter-spacing: 0.04em; }
+  .stat-label { font-family: 'Bebas Neue', sans-serif; font-size: 0.85rem; color: #ffffff; margin-top: .2rem; font-weight: 700; letter-spacing: 0.2em; word-spacing: 0.3em; }
 
   /* Table */
-  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .card { background: var(--admin-surface); border: 1px solid var(--admin-border); border-radius: 12px; overflow: hidden; }
   table { width: 100%; border-collapse: collapse; }
   thead { background: rgba(124,106,247,.06); }
-  th { padding: .9rem 1.2rem; text-align: left; font-size: .75rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
-  td { padding: .85rem 1.2rem; border-top: 1px solid var(--border); vertical-align: middle; }
+  th { padding: .9rem 1.2rem; text-align: left; font-size: .75rem; font-weight: 700; color: var(--admin-muted); text-transform: uppercase; letter-spacing: .06em; }
+  td { padding: .85rem 1.2rem; border-top: 1px solid var(--admin-border); vertical-align: middle; color: var(--admin-text); }
   tr:hover td { background: rgba(255,255,255,.02); }
 
-  .project-title { font-weight: 600; font-size: .95rem; }
-  .project-desc { font-size: .82rem; color: var(--muted); max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .project-title { font-weight: 600; font-size: .95rem; color: var(--admin-text); }
+  .project-desc { font-size: .82rem; color: var(--admin-muted); max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
   .badge {
     display: inline-flex; align-items: center; gap: .3rem;
     padding: .2rem .6rem; border-radius: 99px; font-size: .75rem; font-weight: 600;
   }
-  .badge-tech { background: rgba(124,106,247,.12); color: var(--accent); margin: .1rem; }
-  .badge-featured { background: rgba(249,115,22,.15); color: var(--accent2); }
+  .badge-tech { background: rgba(124,106,247,.12); color: var(--admin-accent); margin: .1rem; }
+  .badge-featured { background: rgba(249,115,22,.15); color: var(--admin-accent2); }
   .badge-cat { background: rgba(34,197,94,.1); color: var(--success); }
 
-  .actions { display: flex; gap: .4rem; }
-  .empty-state { text-align: center; padding: 4rem; color: var(--muted); }
+  .actions { display: flex; gap: .4rem; flex-wrap: wrap; }
+  .empty-state { text-align: center; padding: 4rem; color: var(--admin-muted); }
   .empty-icon { font-size: 3rem; margin-bottom: 1rem; }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="layout">
-  <nav class="sidebar">
-    <div class="sidebar-brand">⚡ Portfolio</div>
-    <a href="{{ url_for('admin_dashboard') }}" class="active">📁 Projets</a>
-    <a href="{{ url_for('admin_project_new') }}">➕ Nouveau projet</a>
-    <a href="{{ url_for('index') }}" target="_blank">🌐 Voir le site</a>
-    <div class="sidebar-spacer"></div>
-    <a href="{{ url_for('admin_logout') }}" style="color:var(--error)">🚪 Déconnexion</a>
-  </nav>
 
+<!-- Overlay -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<!-- Bouton hamburger -->
+<button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" aria-label="Menu">
+  <span></span>
+  <span></span>
+  <span></span>
+</button>
+
+<!-- Sidebar drawer -->
+<nav class="sidebar" id="sidebar">
+  <a href="{{ url_for('admin_dashboard') }}" class="active">📁 Projets</a>
+  <a href="{{ url_for('admin_project_new') }}">➕ Nouveau projet</a>
+  <a href="{{ url_for('index') }}" target="_blank">🌐 Voir le site</a>
+  <div class="sidebar-spacer"></div>
+  <a href="{{ url_for('admin_logout') }}" style="color:var(--error)">🚪 Déconnexion</a>
+</nav>
+
+<div class="layout">
   <main class="main">
     <div class="page-header">
       <h1 class="page-title">Mes projets</h1>
-      <a href="{{ url_for('admin_project_new') }}" class="btn btn-primary">➕ Ajouter un projet</a>
     </div>
 
     <!-- Stats -->
@@ -113,31 +205,6 @@
         <div class="stat-label">Notifier les abonnés</div>
       </div>
     </div>
-
-    <script>
-    async function sendPush() {
-        const title = prompt("Titre de la notification:", "Nouveau projet !");
-        if (!title) return;
-        const body = prompt("Message de la notification:", "Viens voir mon dernier projet sur Milliardo HUD.");
-        if (!body) return;
-
-        try {
-            const res = await fetch('/admin/notify', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title, body })
-            });
-            const data = await res.json();
-            if (data.status === 'ok') {
-                alert(`Succès ! Envoyé à ${data.sent} abonnés.`);
-            } else {
-                alert(`Erreur: ${data.message}`);
-            }
-        } catch (e) {
-            alert(`Erreur: ${e.message}`);
-        }
-    }
-    </script>
 
     <div class="card">
       {% if projects %}
@@ -167,7 +234,7 @@
               {% endif %}
             </td>
             <td>
-              {% if p.category %}<span class="badge badge-cat">{{ p.category }}</span>{% else %}<span style="color:var(--muted)">—</span>{% endif %}
+              {% if p.category %}<span class="badge badge-cat">{{ p.category }}</span>{% else %}<span style="color:var(--admin-muted)">—</span>{% endif %}
             </td>
             <td>
               <form method="POST" action="{{ url_for('admin_toggle_featured', pid=p.id) }}" style="display:inline">
@@ -205,4 +272,35 @@
     </div>
   </main>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  function toggleSidebar() {
+    const sidebar  = document.getElementById('sidebar');
+    const toggle   = document.getElementById('sidebarToggle');
+    const overlay  = document.getElementById('sidebarOverlay');
+    sidebar.classList.toggle('open');
+    toggle.classList.toggle('open');
+    overlay.classList.toggle('open');
+  }
+
+  async function sendPush() {
+    const title = prompt("Titre de la notification:", "Nouveau projet !");
+    if (!title) return;
+    const body = prompt("Message de la notification:", "Viens voir mon dernier projet sur Milliardo HUD.");
+    if (!body) return;
+    try {
+      const res = await fetch('/admin/notify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, body })
+      });
+      const data = await res.json();
+      alert(data.status === 'ok' ? 'Notification envoyée !' : `Erreur: ${data.message}`);
+    } catch (e) {
+      alert(`Erreur: ${e.message}`);
+    }
+  }
+</script>
 {% endblock %}

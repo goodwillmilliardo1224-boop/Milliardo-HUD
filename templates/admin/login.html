@@ -1,54 +1,140 @@
 {% extends "base.html" %}
 {% block title %}Admin — Connexion{% endblock %}
+{% block push_js %}{% endblock %}
 
-{% block extra_style %}
+{% block extra_css %}
 <style>
-  .login-wrap {
-    min-height: 100vh; display: grid; place-items: center;
-    background: radial-gradient(ellipse 80% 60% at 50% 0%, #1a1040 0%, var(--bg) 70%);
+  .login-wrapper {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 500;
+    pointer-events: none;
   }
+
   .login-card {
-    width: 100%; max-width: 400px; padding: 2.5rem;
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 16px;
-    box-shadow: 0 0 60px rgba(124,106,247,.08);
-    text-align: center; /* Centre le texte et les éléments internes */
+    pointer-events: all;
+    width: 380px;
+    padding: 2.5rem 2rem 2.2rem;
+    border-radius: 40px;
+    position: relative;
+    color: #fff;
+    text-align: center;
+    overflow: hidden;
+
+    background: linear-gradient(
+      160deg,
+      rgba(255, 255, 255, 0.14) 0%,
+      rgba(255, 255, 255, 0.05) 100%
+    );
+    backdrop-filter: blur(20px) saturate(150%);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow:
+      0 20px 60px rgba(0, 0, 0, 0.45),
+      inset 0 1px 1px rgba(255, 255, 255, 0.28),
+      inset 0 -1px 1px rgba(0, 0, 0, 0.25);
   }
-  .login-logo {
-    font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800;
-    color: var(--accent); letter-spacing: -1px; margin-bottom: .3rem;
+
+  .login-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      120deg,
+      rgba(255, 255, 255, 0.16) 0%,
+      transparent 30%,
+      transparent 70%,
+      rgba(255, 255, 255, 0.07) 100%
+    );
+    pointer-events: none;
   }
-  .login-sub { color: var(--muted); font-size: .9rem; margin-bottom: 3.5rem; } /* Plus d'espace pour descendre le champ */
-  .field { margin-bottom: 1.2rem; }
-  .field label { display: block; font-size: .8rem; font-weight: 600; color: var(--muted); margin-bottom: .4rem; letter-spacing: .05em; text-transform: uppercase; text-align: center; }
-  .field input {
-    width: 100%; padding: 1.1rem 1.2rem; /* Plus haut et large pour le confort */
-    background: var(--bg); border: 1px solid var(--border);
-    border-radius: var(--radius); color: var(--text);
-    font-family: 'Epilogue', sans-serif; font-size: 1rem;
-    transition: border-color .2s;
-    text-align: center; /* Centre le curseur et le mot de passe */
+
+  .login-inner {
+    position: relative;
+    z-index: 1;
   }
-  .field input:focus { outline: none; border-color: var(--accent); }
-  .login-btn { width: 100%; padding: .85rem; font-size: 1rem; justify-content: center; margin-top: .5rem; }
-  .lock-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+
+  .login-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    display: block;
+    margin: 0 auto 2rem;
+  }
+
+  .login-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 1.8rem;
+  }
+
+  .login-fields input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+    color: #fff;
+    font-size: 0.95rem;
+    padding: 0.5rem 0;
+    outline: none;
+    transition: border-color 0.2s;
+    font-family: 'Oxanium', sans-serif;
+    text-align: left;
+    box-sizing: border-box;
+  }
+
+  .login-fields input::placeholder {
+    color: rgba(255, 255, 255, 0.45);
+  }
+
+  .login-fields input:focus {
+    border-bottom-color: rgba(255, 255, 255, 0.8);
+  }
+
+  .login-btn {
+    width: 100%;
+    padding: 0.75rem;
+    background: #22d3ee;
+    color: #0a0a0f;
+    font-weight: 700;
+    font-size: 0.95rem;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-family: 'Oxanium', sans-serif;
+    letter-spacing: 0.05em;
+  }
+
+  .login-btn:hover {
+    background: #67e8f9;
+  }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="login-wrap">
+<div class="login-wrapper">
   <div class="login-card">
-    <div class="lock-icon">🔐</div>
-    <div class="login-logo">Admin</div>
-    <p class="login-sub">Espace de gestion du portfolio</p>
-
-    <form method="POST">
-      <div class="field">
-        <label>Mot de passe</label>
-        <input type="password" name="password" placeholder="••••••••" autofocus required />
-      </div>
-      <button type="submit" class="btn btn-primary login-btn">Se connecter</button>
-    </form>
+    <div class="login-inner">
+      <img
+        src="{{ url_for('static', filename='img/login-profil.png') }}"
+        alt="Profil"
+        class="login-avatar"
+      />
+      <form method="POST">
+        <div class="login-fields">
+          <input type="text" name="username" placeholder="Admin name" />
+          <input type="password" name="password" placeholder="Password" required />
+        </div>
+        <button type="submit" class="login-btn">Entrer</button>
+      </form>
+    </div>
   </div>
 </div>
 {% endblock %}

@@ -1,73 +1,159 @@
 {% extends "base.html" %}
 {% block title %}Admin — {{ action }} un projet{% endblock %}
+{% block push_js %}{% endblock %}
 
-{% block extra_style %}
+{% block extra_css %}
 <style>
-  .layout { display: flex; min-height: 100vh; }
-  .sidebar {
-    width: 220px; flex-shrink: 0;
-    background: var(--surface); border-right: 1px solid var(--border);
-    padding: 1.5rem 1rem; display: flex; flex-direction: column; gap: .3rem;
-    position: sticky; top: 0; height: 100vh;
+  .layout {
+    display: flex;
+    min-height: 100vh;
+    padding-top: var(--nav-height, 80px);
   }
-  .sidebar-brand { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; color: var(--accent); padding: .5rem .75rem 1.2rem; letter-spacing: -.5px; }
-  .sidebar a { display: flex; align-items: center; gap: .6rem; padding: .6rem .75rem; border-radius: 8px; color: var(--muted); font-size: .9rem; font-weight: 500; transition: all .2s; }
-  .sidebar a:hover { background: rgba(124,106,247,.12); color: var(--accent); }
-  .sidebar-spacer { flex: 1; }
 
-  .main {
-    flex: 1;
-    padding: 2rem;
+  /* Police globale */
+  .layout * {
+    font-family: 'Bebas Neue', 'Oxanium', sans-serif;
+    letter-spacing: 0.06em;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #ffffff;
+  }
+  .field input, .field textarea, .field select, .field-hint, .page-sub {
+    font-family: 'Oxanium', sans-serif;
+    letter-spacing: normal;
+    font-size: 0.92rem;
+    font-weight: 400;
+  }
+
+  /* ── SIDEBAR DRAWER ── */
+  .sidebar {
+    position: fixed;
+    top: var(--nav-height, 80px);
+    left: 0;
+    height: calc(100vh - var(--nav-height, 80px));
+    width: 220px;
+    background: var(--admin-surface);
+    border-right: 1px solid var(--admin-border);
+    padding: 1.5rem 1rem;
     display: flex;
     flex-direction: column;
-    align-items: center; /* Centrage horizontal */
+    gap: .3rem;
+    z-index: 200;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  .page-header, .form-card {
-    width: 100%;
-    max-width: 900px; /* Largeur maximale pour le formulaire */
+  .sidebar.open { transform: translateX(0); }
+  .sidebar a {
+    display: flex; align-items: center; gap: .6rem;
+    padding: .6rem .75rem; border-radius: 8px;
+    color: var(--admin-muted); font-weight: 500;
+    transition: all .2s; text-decoration: none;
   }
-  .page-header { margin-bottom: 2rem; }
-  .page-title { font-size: 1.6rem; font-weight: 800; }
-  .page-sub { color: var(--muted); font-size: .9rem; margin-top: .3rem; }
+  .sidebar a:hover { background: rgba(124,106,247,.12); color: var(--admin-accent); }
+  .sidebar-spacer { flex: 1; }
 
-  .form-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; }
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 199;
+  }
+  .sidebar-overlay.open { display: block; }
+
+  /* ── BOUTON TOGGLE ── */
+  .sidebar-toggle {
+    position: fixed;
+    top: calc(var(--nav-height, 80px) + 1rem);
+    left: 1rem;
+    z-index: 201;
+    width: 40px;
+    height: 40px;
+    background: var(--admin-surface);
+    border: 1px solid var(--admin-border);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .sidebar-toggle:hover { background: rgba(124,106,247,.12); }
+  .sidebar-toggle span {
+    display: block;
+    width: 18px;
+    height: 2px;
+    background: var(--admin-text);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    font-size: 0;
+    letter-spacing: 0;
+  }
+  .sidebar-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .sidebar-toggle.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  .sidebar-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  /* ── MAIN ── */
+  .main {
+    flex: 1;
+    padding: 2rem 2rem 2rem 5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .page-header, .form-card { width: 100%; max-width: 900px; }
+  .page-header { margin-bottom: 2rem; }
+  .page-title { font-size: 1.6rem; font-weight: 800; color: var(--admin-text); }
+  .page-sub { color: var(--admin-muted); font-size: .9rem; margin-top: .3rem; }
+
+  .form-card { background: var(--admin-surface); border: 1px solid var(--admin-border); border-radius: 12px; padding: 2rem; }
   .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
   .form-full { grid-column: 1 / -1; }
 
   .field { display: flex; flex-direction: column; gap: .4rem; }
-  .field label { font-size: .78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+  .field label { font-size: .78rem; font-weight: 700; color: var(--admin-muted); text-transform: uppercase; letter-spacing: .06em; }
   .field input, .field textarea, .field select {
     padding: .75rem 1rem;
-    background: var(--bg); border: 1px solid var(--border);
-    border-radius: var(--radius); color: var(--text);
-    font-family: 'Epilogue', sans-serif; font-size: .95rem;
+    background: var(--admin-bg, #0a0a0f); border: 1px solid var(--admin-border);
+    border-radius: var(--radius); color: var(--admin-text);
+    font-family: 'Oxanium', sans-serif; font-size: .95rem;
     transition: border-color .2s;
   }
-  .field input:focus, .field textarea:focus, .field select:focus { outline: none; border-color: var(--accent); }
+  .field input:focus, .field textarea:focus, .field select:focus { outline: none; border-color: var(--admin-accent); }
   .field textarea { resize: vertical; min-height: 100px; }
-  .field-hint { font-size: .78rem; color: var(--muted); margin-top: .2rem; }
+  .field-hint { font-size: .78rem; color: var(--admin-muted); margin-top: .2rem; }
 
   .checkbox-field { flex-direction: row; align-items: center; gap: .6rem; margin-top: .5rem; }
-  .checkbox-field input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer; }
-  .checkbox-field label { text-transform: none; letter-spacing: 0; font-size: .9rem; color: var(--text); cursor: pointer; }
+  .checkbox-field input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--admin-accent); cursor: pointer; }
+  .checkbox-field label { text-transform: none; letter-spacing: 0; font-size: .9rem; color: var(--admin-text); cursor: pointer; }
 
   .form-actions { display: flex; gap: .75rem; margin-top: 1.5rem; }
-  .preview-img { margin-top: .5rem; border-radius: 8px; max-height: 120px; display: none; border: 1px solid var(--border); }
-  .section-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: .85rem; color: var(--accent); text-transform: uppercase; letter-spacing: .1em; margin: 1.5rem 0 .8rem; padding-bottom: .4rem; border-bottom: 1px solid var(--border); grid-column: 1 / -1; }
+  .preview-img { margin-top: .5rem; border-radius: 8px; max-height: 120px; display: none; border: 1px solid var(--admin-border); }
+  .section-title { font-family: 'Bebas Neue', sans-serif; font-weight: 700; font-size: .95rem; color: var(--admin-accent); text-transform: uppercase; letter-spacing: .15em; margin: 1.5rem 0 .8rem; padding-bottom: .4rem; border-bottom: 1px solid var(--admin-border); grid-column: 1 / -1; }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="layout">
-  <nav class="sidebar">
-    <div class="sidebar-brand">⚡ Portfolio</div>
-    <a href="{{ url_for('admin_dashboard') }}">📁 Projets</a>
-    <a href="{{ url_for('admin_project_new') }}">➕ Nouveau projet</a>
-    <a href="{{ url_for('index') }}" target="_blank">🌐 Voir le site</a>
-    <div class="sidebar-spacer"></div>
-    <a href="{{ url_for('admin_logout') }}" style="color:var(--error)">🚪 Déconnexion</a>
-  </nav>
 
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" aria-label="Menu">
+  <span></span>
+  <span></span>
+  <span></span>
+</button>
+
+<nav class="sidebar" id="sidebar">
+  <a href="{{ url_for('admin_dashboard') }}">📁 Projets</a>
+  <a href="{{ url_for('admin_project_new') }}">➕ Nouveau projet</a>
+  <a href="{{ url_for('index') }}" target="_blank">🌐 Voir le site</a>
+  <div class="sidebar-spacer"></div>
+  <a href="{{ url_for('admin_logout') }}" style="color:var(--error)">🚪 Déconnexion</a>
+</nav>
+
+<div class="layout">
   <main class="main">
     <div class="page-header">
       <h1 class="page-title">{{ action }} un projet</h1>
@@ -78,7 +164,6 @@
       <form method="POST" enctype="multipart/form-data">
         <div class="form-grid">
 
-          <!-- Infos principales -->
           <div class="section-title">📋 Informations principales</div>
 
           <div class="field form-full">
@@ -89,11 +174,11 @@
 
           <div class="field form-full">
             <label>Description *</label>
-            <textarea name="description" required placeholder="Décris le projet, ce qu'il fait, tes apprentissages...">{{ project.description if project else '' }}</textarea>
+            <textarea name="description" required placeholder="Décris le projet...">{{ project.description if project else '' }}</textarea>
           </div>
 
           <div class="field">
-            <label>Moule d'affichage (Catégorie)</label>
+            <label>Catégorie</label>
             <select name="category" required>
               <option value="">— Choisir un monde —</option>
               {% for cat_id, cat_label in [('art', '🎨 ART Univers'), ('cybersec', '🛡️ CYBERSEC Terminal'), ('gamedev', '🎮 GAMEDEV Arcade')] %}
@@ -110,7 +195,6 @@
             <span class="field-hint">Sépare chaque techno par une virgule</span>
           </div>
 
-          <!-- Liens -->
           <div class="section-title">🔗 Liens</div>
 
           <div class="field">
@@ -125,20 +209,17 @@
                    value="{{ project.live_url if project else '' }}" />
           </div>
 
-          <!-- Image -->
           <div class="section-title">🖼️ Image</div>
 
           <div class="field form-full">
-            <label>Image de couverture (Fichier local)</label>
+            <label>Image de couverture</label>
             <input type="file" name="image_file" id="imageFile" accept="image/*"
                    onchange="previewLocalImage(this)" />
-            
             {% if project and project.image_url %}
             <div style="margin-top: 10px;">
-                <p style="font-size: 0.8rem; color: var(--muted); margin-bottom: 5px;">Image actuelle :</p>
-                <img id="imgPreview" class="preview-img" style="display: block;"
-                     src="{{ url_for('static', filename='uploads/' + project.image_url) }}"
-                     alt="Aperçu" />
+              <p style="font-size: 0.8rem; color: var(--admin-muted); margin-bottom: 5px;">Image actuelle :</p>
+              <img id="imgPreview" class="preview-img" style="display: block;"
+                   src="{{ url_for('static', filename='uploads/' + project.image_url) }}" alt="Aperçu" />
             </div>
             {% else %}
             <img id="imgPreview" class="preview-img" alt="Aperçu" />
@@ -146,20 +227,19 @@
             <span class="field-hint">Formats acceptés : PNG, JPG, JPEG, GIF</span>
           </div>
 
-          <!-- Options -->
           <div class="section-title">⭐ Options</div>
 
           <div class="field checkbox-field form-full">
             <input type="checkbox" name="featured" id="featured"
                    {% if project and project.featured %}checked{% endif %} />
-            <label for="featured">Mettre ce projet en vedette (affiché en priorité sur le portfolio)</label>
+            <label for="featured">Mettre ce projet en vedette</label>
           </div>
 
         </div>
 
         <div class="form-actions">
           <button type="submit" class="btn btn-primary">
-            {% if project %}✅ Enregistrer les modifications{% else %}➕ Ajouter le projet{% endif %}
+            {% if project %}✅ Enregistrer{% else %}➕ Ajouter{% endif %}
           </button>
           <a href="{{ url_for('admin_dashboard') }}" class="btn btn-ghost">Annuler</a>
         </div>
@@ -169,16 +249,25 @@
 </div>
 {% endblock %}
 
-{% block extra_script %}
+{% block extra_js %}
 <script>
+  function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const toggle  = document.getElementById('sidebarToggle');
+    const overlay = document.getElementById('sidebarOverlay');
+    sidebar.classList.toggle('open');
+    toggle.classList.toggle('open');
+    overlay.classList.toggle('open');
+  }
+
   function previewLocalImage(input) {
     const img = document.getElementById('imgPreview');
     if (input.files && input.files[0]) {
       const reader = new FileReader();
-      reader.onload = function(e) {
+      reader.onload = e => {
         img.src = e.target.result;
         img.style.display = 'block';
-      }
+      };
       reader.readAsDataURL(input.files[0]);
     }
   }

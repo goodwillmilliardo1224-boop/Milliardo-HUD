@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 
-{% block title %}m!ll!@rd0 — Portfolio{% endblock %}
+{% block title %}m!ll!@rd0 — Portfolio de Goodwill{% endblock %}
+{% block og_title %}Milliardo HUD — Portfolio interactif de Goodwill{% endblock %}
+{% block og_description %}Portfolio immersif de Goodwill : Cybersécurité, Game Dev 2D, Art. Interface HUD inspirée des terminaux Linux.{% endblock %}
 
 {% block favicon %}
 <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/accueilicon.png') }}">
@@ -8,6 +10,7 @@
 
 {% block content %}
 <main>
+  <h1 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;">Portfolio de Goodwill — Cybersécurité, Game Dev et Art</h1>
 
   <!-- 1. HERO / IDENTITY -->
   <div class="profile-wrapper">
@@ -15,7 +18,7 @@
     <div class="profile-left">
       <div class="container-3d">
         <div class="profile-container cadre-3d">
-          <img src="{{ url_for('static', filename='img/croix.jpg') }}" alt="croix" class="profile-img"/>
+          <img src="{{ url_for('static', filename='img/croix.jpg') }}" alt="Photo de profil de Goodwill" class="profile-img"/>
         </div>
       </div>
 
@@ -73,7 +76,7 @@
                 {# Nouveau système DB avec upload #}
                 <img src="{{ url_for('static', filename='uploads/' + projet.image_url) }}" alt="{{ projet.title }}"/>
               {% else %}
-                <img src="{{ url_for('static', filename='img/cyber.jpg') }}" alt="Default"/>
+                <img src="{{ url_for('static', filename='img/cyber.jpg') }}" alt="Projet portfolio Milliardo"/>
               {% endif %}
               <div class="seg-col"></div>
               <div class="seg-ov"></div>

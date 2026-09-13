@@ -230,46 +230,72 @@
     }
 
     function displayProjectsHUD(container) {
-        const liste = [
-          { titre: "Script Contrôle Réseau" },
-          { titre: "Transcription Visuelle" },
-          { titre: "Milliardo HUD" }
-        ];
-      
-        setTimeout(() => {
-            const grid = document.createElement('div');
-            grid.style.cssText = `
-                display: flex; flex-wrap: nowrap; overflow-x: auto;
-                gap: 20px; padding-bottom: 15px; scrollbar-width: none;
-                margin-top: 20px; animation: fadeUpIn 0.5s ease forwards;
-            `;
-            grid.style.msOverflowStyle = 'none';
-        
-            liste.forEach(p => {
-                const card = document.createElement('div');
-                card.style.cssText = `
-                    width: 220px; height: 240px; flex-shrink: 0;
-                    border: 1px solid rgba(255,255,255,0.15); background: rgba(0, 0, 0, 0.6);
-                    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-                    border-radius: 6px; 
-                    cursor: pointer; transition: all 0.3s ease; overflow: hidden;
-                    display: flex; flex-direction: column;
+        fetch('/api/projects/cyber')
+          .then(r => r.json())
+          .then(data => {
+            // Fallback si Supabase vide
+            const liste = data.length > 0 ? data.map(p => ({
+                titre:       p.title,
+                description: p.description,
+                tags:        p.tech_stack,
+                github_url:  p.github_url,
+                live_url:    p.live_url,
+                image_url:   p.image_url,
+            })) : [
+              { titre: "Script Contrôle Réseau",   description: "Scripting Python offensif", tags: "Python, Scapy" },
+              { titre: "Transcription Visuelle",    description: "OCR / Image-to-Text",       tags: "Python, CV" },
+              { titre: "Milliardo HUD",             description: "Portfolio cyber-interactif", tags: "Flask, JS" }
+            ];
+
+            setTimeout(() => {
+                const grid = document.createElement('div');
+                grid.style.cssText = `
+                    display: flex; flex-wrap: nowrap; overflow-x: auto;
+                    gap: 20px; padding-bottom: 15px; scrollbar-width: none;
+                    margin-top: 20px; animation: fadeUpIn 0.5s ease forwards;
                 `;
-                card.innerHTML = `
-                    <div style="width:100%;height:150px;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                        <span style="font-size:12px;color:rgba(255,255,255,0.2);font-family:'Courier New',monospace;letter-spacing:3px;font-weight:bold;">[ VIEW_IMG ]</span>
-                    </div>
-                    <div style="padding:15px;border-top:1px solid rgba(255,255,255,0.1);flex:1;display:flex;flex-direction:column;justify-content:center;background:rgba(0,0,0,0.2);">
-                        <div style="font-size:13px;color:#fff;font-family:'Courier New',monospace;letter-spacing:1px;line-height:1.3;font-weight:bold;">${p.titre}</div>
-                    </div>
-                `;
-                card.addEventListener('mouseenter', () => { card.style.borderColor = '#1a74b1'; card.style.transform = 'translateY(-5px)'; });
-                card.addEventListener('mouseleave', () => { card.style.borderColor = 'rgba(255,255,255,0.15)'; card.style.transform = 'translateY(0)'; });
-                grid.appendChild(card);
-            });
-            container.appendChild(grid);
-            chatArea.scrollTop = chatArea.scrollHeight;
-        }, 500);
+                grid.style.msOverflowStyle = 'none';
+
+                liste.forEach(p => {
+                    const card = document.createElement('div');
+                    card.style.cssText = `
+                        width: 220px; height: 240px; flex-shrink: 0;
+                        border: 1px solid rgba(255,255,255,0.15); background: rgba(0, 0, 0, 0.6);
+                        backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+                        border-radius: 6px;
+                        cursor: pointer; transition: all 0.3s ease; overflow: hidden;
+                        display: flex; flex-direction: column;
+                    `;
+
+                    const imgHtml = p.image_url
+                        ? `<img src="/static/uploads/${p.image_url}" style="width:100%;height:150px;object-fit:cover;flex-shrink:0;" />`
+                        : `<div style="width:100%;height:150px;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                               <span style="font-size:12px;color:rgba(255,255,255,0.2);font-family:'Courier New',monospace;letter-spacing:3px;font-weight:bold;">[ VIEW_IMG ]</span>
+                           </div>`;
+
+                    const linkHtml = p.github_url
+                        ? `<a href="${p.github_url}" target="_blank" style="font-size:10px;color:#00F5FF;margin-top:4px;text-decoration:none;">→ GitHub</a>`
+                        : (p.live_url ? `<a href="${p.live_url}" target="_blank" style="font-size:10px;color:#00F5FF;margin-top:4px;text-decoration:none;">→ Live</a>` : '');
+
+                    card.innerHTML = `
+                        ${imgHtml}
+                        <div style="padding:12px;border-top:1px solid rgba(255,255,255,0.1);flex:1;display:flex;flex-direction:column;justify-content:center;background:rgba(0,0,0,0.2);">
+                            <div style="font-size:13px;color:#fff;font-family:'Courier New',monospace;letter-spacing:1px;line-height:1.3;font-weight:bold;">${p.titre}</div>
+                            ${p.tags ? `<div style="font-size:10px;color:rgba(0,245,255,0.7);margin-top:4px;">${p.tags}</div>` : ''}
+                            ${linkHtml}
+                        </div>
+                    `;
+                    card.addEventListener('mouseenter', () => { card.style.borderColor = '#1a74b1'; card.style.transform = 'translateY(-5px)'; });
+                    card.addEventListener('mouseleave', () => { card.style.borderColor = 'rgba(255,255,255,0.15)'; card.style.transform = 'translateY(0)'; });
+                    grid.appendChild(card);
+                });
+                container.appendChild(grid);
+                chatArea.scrollTop = chatArea.scrollHeight;
+            }, 500);
+          })
+          .catch(() => {
+            console.warn('Erreur chargement projets cyber');
+          });
     }
 
     function displayContactHUD(container) {

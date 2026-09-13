@@ -1,6 +1,8 @@
-{% extends "base.html" %}
+﻿{% extends "base.html" %}
 
 {% block title %}GameDev — m!ll!@rd0{% endblock %}
+{% block og_title %}Goodwill — Univers Game Dev{% endblock %}
+{% block og_description %}Projets Game Dev de Goodwill : Metroidvania africain, mods Unity, RPG CLI en C. Game Designer 2D spécialisé boss design.{% endblock %}
 
 {% block body_class %}universe-games{% endblock %}
 
@@ -57,7 +59,7 @@
 
 {% block background_effects %}
 <div class="conteneur-fond">
-    <img src="{{ url_for('static', filename=('img/gamefond.png' | optimize)) }}" alt="Background" id="image-fond">
+    <img src="{{ url_for('static', filename=('img/gamefond.png' | optimize)) }}" alt="Fond univers Game Dev — Milliardo HUD" id="image-fond">
     <div class="overlay-video"></div>
 </div>
 {% endblock %}
@@ -95,7 +97,7 @@
             <div class="img-reveal" id="img-wrapper">
                 <img class="img-bw"
                      src="{{ url_for('static', filename=('img/gametitle.png' | optimize)) }}"
-                     alt="Game Dev" />
+                     alt="Milliardo Game Dev — titre" />
                 <img class="img-color"
                      src="{{ url_for('static', filename=('img/gametitle.png' | optimize)) }}"
                      alt="" aria-hidden="true" id="color-img" />
@@ -120,14 +122,14 @@
             <div class="line-wrap"><span class="line-inner">Actuellement focalisé sur le développement de prototypes et de mini-projets techniques, j'explore en profondeur les concepts fondamentaux du jeu vidéo</span></div>
             <div class="line-wrap"><span class="line-inner">(State Machines, IA de combat, gestion des collisions et feedbacks) pour parfaire mes compétences et concevoir les boss de demain.</span></div>
         </div>
-        <img src="{{ url_for('static', filename=('img/moi-1.png' | optimize)) }}" alt="Moi" class="image-moi-vitrine">
+        <img src="{{ url_for('static', filename=('img/moi-1.png' | optimize)) }}" alt="Goodwill — Game Designer 2D et développeur" class="image-moi-vitrine">
     </section>
 
     <!-- SECTION STACK -->
     <section class="section-stack">
         <div class="stack-header">
             <h2>Compétences Techniques</h2>
-            <h1>Ma Stack</h1>
+            <h2>Ma Stack</h2>
         </div>
         <div class="stack-grid">
             <div class="stack-item">
@@ -155,7 +157,7 @@
 
     <!-- TIMELINE DES PROJETS -->
     <div class="section-title">
-        <h1>Mes Projets</h1>
+        <h2>Mes Projets</h2>
     </div>
 
     <div class="timeline-wrapper" id="wrapper">
@@ -225,7 +227,7 @@
     <section class="section-inspirations">
         <div class="inspirations-header">
             <h2>Sources de Design</h2>
-            <h1>Mes Inspirations</h1>
+            <h2>Mes Inspirations</h2>
         </div>
         <div class="filters" id="filters-inspirations"></div>
         <div class="grid-inspirations" id="grid-inspirations"></div>
@@ -316,82 +318,61 @@
 /* ════════════════════════════════════════
    BASE DE DONNÉES DES PROJETS
 ════════════════════════════════════════ */
-const PROJECTS = {
-    wind: {
-        eyebrow: "Projet Phare",
-        title: "La Renaissance du Metroidvania Africain",
-        company: "Projet Indépendant • En développement",
-        tags: ["Metroidvania", "2D", "Bénin", "Indie", "Hollow Knight", "Game Design"],
-        type: "rich",
-        sections: [
-            {
-                title: "Le Constat : Un Marché Vierge à Conquérir",
-                body: "L'Afrique est aujourd'hui le continent de la consommation numérique, mais reste le grand absent de la production mondiale de jeux vidéo. Alors que l'industrie du gaming génère des revenus dépassant ceux du cinéma et de la musique réunis, le potentiel africain — et particulièrement béninois — demeure inexploité. Mon projet ne se contente pas de combler ce vide : il ambitionne de redéfinir les standards de la création indépendante sur le continent."
-            },
-            {
-                title: "La Vision : L'Excellence de la 2D",
-                body: "Loin de vouloir rivaliser avec les budgets colossaux des blockbusters 3D, je mise sur la maîtrise artistique et technique de la 2D. En m'appuyant sur les codes de références mondiales comme Hollow Knight, mon objectif est de créer une œuvre qui s'impose par sa direction artistique et son gameplay, plutôt que par la force brute technologique."
-            }
-        ],
-        pillars: [
-            { title: "Innovation de Gameplay", body: "Le jeu repose sur une mécanique centrale inédite pour le genre Metroidvania, transformant l'interaction passive en une expérience tactique profonde. Je briserai les codes du genre et imposerai une nouvelle façon d'exploiter un milieu aussi sous-estimé face aux géants en 3D." },
-            { title: "Liberté Absolue", body: "Contrairement aux structures linéaires, le joueur dispose d'une autonomie totale dans l'évolution de son personnage (builds) et dans le déroulement de son épopée. Ce classique n'existe pas en 2D comme je l'imagine. Hollow Knight, Silksong, Nine Sol l'ont fait — moi j'agrandis la porte et l'horizon." },
-            { title: "Narration Disruptive", body: "Un scénario riche, jalonné de retournements imprévisibles, conçu pour marquer durablement l'esprit des joueurs. Le joueur doit sortir du jeu avec une vision totalement refaite sur certaines questions d'éthique. J'instaure ici un système de narration jusqu'à là jamais pensé." },
-            { title: "Réalisme et Clarté", body: "Chaque mouvement est optimisé pour le feeling de jeu, éliminant le superflu visuel pour se concentrer sur l'adrénaline pure et l'efficacité du gameplay. L'harmonie des couleurs sera au rendez-vous avec une sensation d'être plus dans un réalisme qu'un jeu en 2D." }
-        ],
-        invest: "Je ne cherche pas seulement à créer un jeu, mais à prouver qu'un développeur indépendant peut, depuis le Bénin, produire une référence internationale. Bien que je ne sois pas le premier à y penser, nos productions restent rares, presque invisibles et ne remportent jamais de prix aux Game Awards. Ce que je vise c'est de citer le nom béninois dans cette industrie tout en visant le trône. C'est une invitation à investir dans une propriété intellectuelle à fort potentiel, sur un marché africain en pleine explosion et une scène indé mondiale toujours en quête de la prochaine pépite."
-    },
-    projectx: {
-        eyebrow: "Modding & Gameplay",
-        title: "Mode Arcade Silksong",
-        company: "Unity Mod • Extension de conversion",
-        tags: ["Unity", "C#", "Modding", "Versus Mode", "Boss Playable"],
-        type: "rich",
-        sections: [
-            {
-                title: "Vision du Projet",
-                body: "Développement d’une extension (Mod) de conversion partielle pour le jeu Hollow Knight: Silksong (Unity), introduisant un mode de combat \"Versus\" inédit (Joueur vs IA / Joueur vs Joueur)."
-            },
-            {
-                title: "Intégration & Architecture",
-                body: "L'objectif est d'injecter un Mode Arcade directement dans les menus du jeu d'origine, modifiant son architecture pour rendre les boss officiels de l'univers de Team Cherry (Hollow Knight & Silksong) entièrement contrôlables à la manette par les joueurs, au fil de leur déblocage dans la progression du jeu de base."
-            }
-        ]
-    },
-    projecty: {
-        eyebrow: "Architecture Système & C",
-        title: "RPG CLI (Engine & Game)",
-        company: "C Standard • Moteur de jeu asynchrone",
-        tags: ["Langage C", "Multi-threading", "Génération Procédurale", "ANSI", "Roguelike"],
-        type: "rich",
-        sections: [
-            {
-                title: "Synopsis",
-                body: "Développement d'un jeu de rôle (RPG) tactique et d'exploration en mode texte (CLI), entièrement conçu en C standard. Le projet intègre un moteur de rendu rafraîchi par coordonnées (évitant le screen-flickering), une génération de niveaux procédurale et un cycle de jeu asynchrone où le joueur et les intelligences artificielles évoluent en temps réel."
-            }
-        ],
-        pillarsTitle: "🚀 Défis Techniques & Architecture",
-        pillars: [
-            {
-                title: "Multi-Threading & Concurrence",
-                body: "Implémentation d'une abstraction système permettant de faire tourner le moteur sous Windows (Win32 API) et Linux (pthread). Gestion des accès concurrents via des mutex / sections critiques pour éviter toute race condition entre l'IA et les entrées utilisateur."
-            },
-            {
-                title: "Génération Procédurale (DFS)",
-                body: "Conception d'un algorithme de génération de labyrinthes par parcours en profondeur (DFS) avec gestion manuelle d'une pile de structures. Garantit des niveaux uniques, clos et structurellement résolubles."
-            },
-            {
-                title: "Rendu Performant ANSI",
-                body: "Utilisation des séquences d'échappement ANSI pour un affichage dynamique par coordonnées spatiales (X, Y). Élimine le scintillement (screen-flickering) et offre un rendu fluide à 30 FPS."
-            },
-            {
-                title: "Persistance & Permadeath",
-                body: "Système de sérialisation sur fichiers texte pour sauvegarder l'état du joueur. Implémentation d'une mécanique de mort permanente (roguelike) avec destruction du fichier de sauvegarde en cas d'échec."
-            }
-        ],
-        downloadUrl: "/static/rpg_cli.exe"
+/* ════════════════════════════════════════
+   BASE DE DONNÉES DES PROJETS — DYNAMIQUE
+════════════════════════════════════════ */
+let PROJECTS = {};
+
+async function loadProjects() {
+    try {
+        const res = await fetch('/api/projects/games');
+        const data = await res.json();
+
+        const timeline = document.getElementById('timeline');
+        if (!timeline) return;
+
+        // Garder la ligne verticale
+        const line = timeline.querySelector('.timeline-line');
+        // Supprimer seulement les items hardcodés
+        timeline.querySelectorAll('.timeline-item').forEach(el => el.remove());
+
+        if (data.length === 0) return;
+
+        data.forEach((p, i) => {
+            const side = i % 2 === 0 ? 'right' : 'left';
+            const id = `project-${p.id}`;
+            const tags = p.tech_stack ? p.tech_stack.split(',').map(t => t.trim()) : [];
+
+            PROJECTS[id] = {
+                eyebrow:  p.featured ? 'Projet Phare' : 'Projet',
+                title:    p.title,
+                company:  tags.slice(0, 2).join(' • ') || p.category,
+                tags:     tags,
+                type:     'rich',
+                sections: [{ title: 'Description', body: p.description }],
+                github_url:  p.github_url  || '',
+                live_url:    p.live_url    || '',
+                trailer_url: p.trailer_url || '',
+                image_url:   p.image_url   || '',
+            };
+
+            const item = document.createElement('div');
+            item.className = `timeline-item ${side}`;
+            item.dataset.id = id;
+            item.innerHTML = `
+                <div class="timeline-dot"></div>
+                <span class="tl-line"><span class="tl-inner tl-title">${p.title}</span></span>
+                <span class="tl-line"><span class="tl-inner tl-company">${tags.slice(0,2).join(' • ') || p.category}</span></span>
+                <span class="tl-line"><span class="tl-inner tl-desc">${p.description ? p.description.substring(0, 100) + '...' : ''}</span></span>
+                <span class="tl-line"><span class="tl-inner"><button class="btn-details" onclick="openPanel(this)">Voir détails</button></span></span>
+            `;
+            timeline.appendChild(item);
+            if (typeof timelineObserver !== 'undefined') timelineObserver.observe(item);
+        });
+    } catch(e) {
+        console.warn('Erreur chargement projets games:', e);
     }
-};
+}
 
 if (window.CSS && CSS.registerProperty) {
     CSS.registerProperty({
@@ -535,5 +516,9 @@ document.addEventListener('mousedown', (e) => {
     const panelRight = document.getElementById('panel-right');
     if (!panelLeft.contains(e.target) && !panelRight.contains(e.target)) closePanel();
 });
+
+// Chargement dynamique des projets depuis Supabase
+// Appelé après la déclaration de timelineObserver
+loadProjects();
 </script>
 {% endblock %}
