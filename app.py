@@ -3,7 +3,7 @@ import os
 from datetime import datetime
 from functools import wraps
 
-from flask import Flask, render_template, abort, request, jsonify, redirect, url_for, session, flash
+from flask import Flask, render_template, abort, request, jsonify, redirect, url_for, session, flash, send_from_directory
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from dotenv import load_dotenv
@@ -607,6 +607,10 @@ Disallow: /admin/*
 Sitemap: https://milliardo.vercel.app/sitemap.xml
 """
     return Response(content, mimetype='text/plain')
+
+@app.route('/googlece4737b8c14dde2b.html')
+def google_site_verification():
+    return send_from_directory(os.path.dirname(os.path.abspath(__file__)), 'googlece4737b8c14dde2b.html')
 
 if __name__ == "__main__":
     print("✅ App initialisée avec Supabase SDK.")
