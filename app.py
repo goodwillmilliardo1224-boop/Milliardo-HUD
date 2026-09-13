@@ -310,17 +310,17 @@ def detail_projet(domaine):
     if not projet:
         projet = get_project_from_json(domaine, cat)
 
-    if not projet:
-        print(f"❌ [DEBUG] Projet non trouvé pour domaine='{domaine}'")
+    # Sur la page, on affiche quand même le template même sans projet en base
+    template_name = templates_map.get(domaine) or templates_map.get(cat)
+    if not template_name:
         abort(404)
 
-    if isinstance(projet, dict):
+    if projet and isinstance(projet, dict):
         if 'titre' in projet and not projet.get('title'):
             projet['title'] = projet['titre']
         if not projet.get('description'):
             projet['description'] = "Description non disponible"
 
-    template_name = templates_map.get(domaine, templates_map.get(cat, 'projet_detail.html'))
     print(f"📂 [DEBUG] Chargement du template : {template_name}")
     return render_template(template_name, projet=projet)
 

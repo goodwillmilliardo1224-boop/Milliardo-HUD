@@ -6,6 +6,15 @@
 .agents/
 skills-lock.json
 
+# Fichiers de test locaux (contiennent potentiellement des clés)
+test_groq.py
+
+# Fichiers de config glass (usage local uniquement)
+glass.json
+glass-2.json
+glass.md
+liquid.json
+
 # Databases
 *.db
 *.sqlite3
